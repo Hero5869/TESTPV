@@ -6,8 +6,9 @@
   <title>Payment Request • CSC Center Jandwala</title>
   <meta name="description" content="Official Payment Reminder and UPI QR Page for CSC Center Jandwala" />
 
-  <!-- Backup CDN scripts (optional fallbacks; internal generator is fully embedded) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" onerror="console.log('CDN backup unavailable, using embedded QR engine');"></script>
+  <!-- Backup CDN scripts for QR generation -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
   <style>
     * {
@@ -18,7 +19,7 @@
     }
 
     body {
-      background-color: #f8fafc;
+      background-color: #f1f5f9;
       color: #0f172a;
       display: flex;
       justify-content: center;
@@ -29,57 +30,89 @@
 
     .container {
       width: 100%;
-      max-width: 440px;
+      max-width: 480px;
       margin: auto;
     }
 
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 12px;
-      background: #d1fae5;
-      color: #065f46;
-      border-radius: 9999px;
-      font-size: 12px;
-      font-weight: 700;
-      margin-bottom: 12px;
-    }
-
+    /* Top Official Header */
     .header-card {
-      background: linear-gradient(135deg, #047857 0%, #0f766e 100%);
+      background: linear-gradient(135deg, #064e3b 0%, #0f766e 100%);
       color: #ffffff;
       border-radius: 20px;
       padding: 20px;
-      box-shadow: 0 4px 14px rgba(4,120,87,0.2);
+      box-shadow: 0 4px 14px rgba(6,78,59,0.25);
       margin-bottom: 16px;
       text-align: left;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #6ee7b7;
+      background: rgba(0,0,0,0.3);
+      padding: 3px 8px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      border: 1px solid rgba(110,231,183,0.3);
     }
 
     .shop-title {
       font-size: 22px;
-      font-weight: 800;
+      font-weight: 900;
       letter-spacing: -0.5px;
+      line-height: 1.2;
+    }
+
+    .shop-subtitle {
+      font-size: 12px;
+      color: #a7f3d0;
+      margin-top: 2px;
     }
 
     .shop-meta {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 10px;
+      margin-top: 12px;
       padding-top: 10px;
       border-top: 1px solid rgba(255,255,255,0.2);
       font-size: 12px;
     }
 
+    .phone-link {
+      color: #6ee7b7;
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    /* Main Invoice Card */
     .card {
       background: #ffffff;
       border-radius: 20px;
       border: 1px solid #e2e8f0;
-      padding: 22px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
       text-align: center;
       margin-bottom: 16px;
+    }
+
+    .verified-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: #f1f5f9;
+      color: #334155;
+      border: 1px solid #e2e8f0;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 12px;
     }
 
     .title-sub {
@@ -91,39 +124,49 @@
     }
 
     .customer-name {
-      font-size: 24px;
-      font-weight: 800;
-      color: #1e293b;
+      font-size: 26px;
+      font-weight: 900;
+      color: #0f172a;
       margin-top: 4px;
       line-height: 1.2;
     }
 
     .amount-box {
-      background: #ecfdf5;
-      border: 1px solid #a7f3d0;
-      border-radius: 16px;
-      padding: 16px;
-      margin: 16px 0;
+      background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
+      border: 2px solid #a7f3d0;
+      border-radius: 18px;
+      padding: 18px;
+      margin: 18px 0;
     }
 
     .amount-label {
-      font-size: 12px;
+      font-size: 11px;
       color: #065f46;
-      font-weight: 600;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     .amount-value {
-      font-size: 38px;
+      font-size: 42px;
       font-weight: 900;
       color: #047857;
+      margin-top: 2px;
+      letter-spacing: -1px;
+    }
+
+    .amount-sub {
+      font-size: 11px;
+      color: #059669;
+      font-weight: 600;
       margin-top: 2px;
     }
 
     .shop-details {
       background: #f8fafc;
       border: 1px solid #f1f5f9;
-      border-radius: 12px;
-      padding: 12px 14px;
+      border-radius: 14px;
+      padding: 14px;
       text-align: left;
       font-size: 12px;
       margin-top: 14px;
@@ -132,30 +175,44 @@
     .detail-row {
       display: flex;
       justify-content: space-between;
-      padding: 4px 0;
+      align-items: center;
+      padding: 5px 0;
     }
 
     .detail-label {
       color: #64748b;
+      font-weight: 500;
     }
 
     .detail-val {
       font-weight: 700;
-      color: #1e293b;
+      color: #0f172a;
+    }
+
+    .btn-upi-copy {
+      background: #ffffff;
+      border: 1px solid #a7f3d0;
+      color: #065f46;
+      font-family: monospace;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
     }
 
     .btn-pay-now {
       width: 100%;
       padding: 16px;
-      background: #059669;
+      background: linear-gradient(135deg, #059669 0%, #0d9488 100%);
       color: #ffffff;
       border: none;
       border-radius: 14px;
-      font-size: 17px;
-      font-weight: 800;
+      font-size: 18px;
+      font-weight: 900;
       cursor: pointer;
-      box-shadow: 0 4px 12px rgba(5,150,105,0.25);
-      transition: 0.15s;
+      box-shadow: 0 4px 14px rgba(5,150,105,0.3);
+      transition: transform 0.1s, box-shadow 0.1s;
       margin-top: 16px;
     }
 
@@ -167,50 +224,92 @@
       display: none !important;
     }
 
+    /* Voice guidance player */
+    .voice-bar {
+      background: linear-gradient(135deg, #064e3b 0%, #042f2e 100%);
+      color: #ffffff;
+      border-radius: 16px;
+      padding: 14px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      border: 1px solid rgba(110,231,183,0.3);
+    }
+
+    .voice-btn {
+      background: #059669;
+      color: #ffffff;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .voice-btn.active {
+      background: #e11d48;
+    }
+
+    /* QR Code Hub */
     .qr-box {
       background: #ffffff;
-      border: 2px solid #e2e8f0;
-      border-radius: 16px;
-      padding: 12px;
+      border: 2px solid #cbd5e1;
+      border-radius: 18px;
+      padding: 16px;
       display: inline-block;
       margin: 12px auto;
-      min-width: 240px;
-      min-height: 240px;
+      max-width: 280px;
+    }
+
+    #qr-canvas {
+      width: 230px !important;
+      height: 230px !important;
+      display: block;
+      margin: auto;
+      border-radius: 8px;
+    }
+
+    #qr-fallback-img {
+      width: 230px;
+      height: 230px;
+      display: none;
+      margin: auto;
+      border-radius: 8px;
+    }
+
+    /* App Launcher Buttons */
+    .app-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 16px;
     }
 
     .btn-app {
-      width: 100%;
-      padding: 12px 14px;
-      background: #ffffff;
-      border: 2px solid #cbd5e1;
-      border-radius: 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      padding: 12px 16px;
+      border-radius: 12px;
+      background: #ffffff;
+      border: 2px solid #e2e8f0;
       text-decoration: none;
       color: #0f172a;
-      margin-bottom: 10px;
+      font-weight: 800;
       font-size: 14px;
-      font-weight: 700;
       cursor: pointer;
-      transition: 0.15s;
+      transition: all 0.15s;
     }
 
     .btn-app:active {
       transform: scale(0.98);
     }
 
-    .btn-gpay {
-      border-color: #93c5fd;
-    }
-
-    .btn-phonepe {
-      border-color: #d8b4fe;
-    }
-
-    .btn-paytm {
-      border-color: #7dd3fc;
-    }
+    .btn-gpay { border-color: rgba(37,99,235,0.4); }
+    .btn-phonepe { border-color: rgba(126,34,206,0.4); }
+    .btn-paytm { border-color: rgba(2,132,199,0.4); }
 
     .app-icon {
       width: 32px;
@@ -219,240 +318,182 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 13px;
-      font-weight: 800;
+      color: #ffffff;
+      font-weight: 900;
+      font-size: 14px;
       margin-right: 12px;
     }
 
-    .gpay-icon {
-      background: #eff6ff;
-      color: #1d4ed8;
-    }
-
-    .phonepe-icon {
-      background: #faf5ff;
-      color: #7e22ce;
-    }
-
-    .paytm-icon {
-      background: #f0f9ff;
-      color: #0284c7;
-    }
+    .gpay-icon { background: #2563eb; }
+    .phonepe-icon { background: #7e22ce; }
+    .paytm-icon { background: #0284c7; font-size: 10px; }
 
     .btn-tag {
       font-size: 11px;
-      padding: 4px 8px;
-      border-radius: 6px;
-      background: #f1f5f9;
-      color: #475569;
-    }
-
-    .alert-pill {
-      background: #ecfdf5;
-      border: 1px solid #a7f3d0;
-      border-radius: 14px;
-      padding: 12px;
-      color: #065f46;
-      font-size: 12px;
-      margin-bottom: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .voice-btn {
-      background: #059669;
-      color: #fff;
-      border: none;
-      padding: 6px 10px;
-      border-radius: 8px;
-      font-size: 11px;
       font-weight: 700;
-      cursor: pointer;
+      padding: 3px 8px;
+      border-radius: 6px;
     }
 
+    /* 3 Step Guide */
     .steps-card {
       background: #ffffff;
+      border-radius: 18px;
       border: 1px solid #e2e8f0;
-      border-radius: 16px;
-      padding: 16px;
+      padding: 18px;
       text-align: left;
       font-size: 12px;
-      color: #475569;
+      margin-top: 14px;
     }
 
     .steps-title {
-      font-weight: 800;
+      font-weight: 900;
       color: #0f172a;
-      margin-bottom: 8px;
+      margin-bottom: 12px;
       font-size: 13px;
     }
 
     .step-item {
-      margin-bottom: 6px;
       display: flex;
-      gap: 8px;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 10px;
+      line-height: 1.4;
+      color: #334155;
     }
 
     .step-num {
-      background: #ecfdf5;
-      color: #047857;
-      font-weight: 800;
-      padding: 1px 6px;
-      border-radius: 4px;
-      height: fit-content;
-    }
-
-    .form-group {
-      text-align: left;
-      margin-bottom: 14px;
-    }
-
-    .form-label {
-      display: block;
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      color: #475569;
-      margin-bottom: 6px;
-    }
-
-    .form-input {
-      width: 100%;
-      padding: 12px 14px;
-      background: #f8fafc;
-      border: 1.5px solid #cbd5e1;
-      border-radius: 12px;
-      font-size: 14px;
-      font-weight: 600;
-      color: #0f172a;
-      outline: none;
-    }
-
-    .form-input:focus {
-      background: #fff;
-      border-color: #059669;
-    }
-
-    .info-box {
-      background: #eff6ff;
-      border: 1px solid #bfdbfe;
-      border-radius: 12px;
-      padding: 12px;
-      font-size: 11px;
-      color: #1e40af;
-      text-align: left;
-      margin-top: 14px;
-      line-height: 1.5;
-    }
-
-    .url-chip {
-      background: #ffffff;
-      border: 1px solid #93c5fd;
-      padding: 4px 8px;
+      background: #d1fae5;
+      color: #065f46;
+      font-weight: 900;
+      width: 22px;
+      height: 22px;
       border-radius: 6px;
-      font-family: monospace;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-size: 11px;
-      color: #1d4ed8;
-      word-break: break-all;
-      display: block;
-      margin-top: 4px;
-    }
-
-    .sample-badge {
-      display: inline-block;
-      background: #fef3c7;
-      color: #92400e;
-      font-size: 11px;
-      font-weight: 700;
-      padding: 2px 8px;
-      border-radius: 6px;
-      margin-bottom: 8px;
+      flex-shrink: 0;
     }
 
     .footer {
       text-align: center;
+      font-size: 12px;
+      color: #64748b;
+      margin-top: 24px;
+      padding-top: 14px;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    /* Fallback notice */
+    .sample-pill {
+      background: #fef3c7;
+      border: 1px solid #fde68a;
+      color: #92400e;
+      padding: 6px 12px;
+      border-radius: 10px;
       font-size: 11px;
-      color: #94a3b8;
-      margin-top: 20px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      display: block;
+      text-align: center;
     }
   </style>
 </head>
-
 <body>
-
   <div class="container">
-
-    <div style="text-align: center;">
-      <div class="badge">🛡️ Verified Payment Reminder</div>
-    </div>
-
-    <!-- Shop Banner -->
+    <!-- Header Banner -->
     <div class="header-card">
+      <div class="header-badge">जन सेवा केंद्र • Official Digital Seva</div>
       <div class="shop-title">CSC Center Jandwala</div>
+      <div class="shop-subtitle">Village Jandwala • Payment & Banking Services</div>
       <div class="shop-meta">
-        <div>📞 9781925023</div>
-        <div style="font-family: monospace; background: rgba(0,0,0,0.2); padding: 2px 8px; border-radius: 6px;">
-          UPI: Hxupi@slc
-        </div>
+        <span>UPI: <strong>Hxupi@slc</strong></span>
+        <span>Helpline: <a href="tel:9781925023" class="phone-link">9781925023</a></span>
       </div>
     </div>
 
-    <!-- Customer Payment View -->
-    <div id="customer-view-section">
-      <div class="card">
-        <div id="sample-notice" class="sample-badge hidden">Sample Mode Loaded</div>
-        <div class="title-sub">Official Payment Request</div>
-        <div class="customer-name" id="disp-name">Customer</div>
+    <div id="sample-notice" class="sample-pill hidden">
+      ⚡ Sample Mode: Append <code>#1000-Customer_Name</code> to URL to customize
+    </div>
 
-        <div class="amount-box">
-          <div class="amount-label">Pending Amount</div>
-          <div class="amount-value" id="disp-amount">₹0.00</div>
+    <!-- Main Payment Slip -->
+    <div class="card">
+      <div class="verified-pill">
+        ✓ Verified Merchant Billing
+      </div>
+
+      <div class="title-sub">Payment Request For</div>
+      <div class="customer-name" id="disp-name">Hello Rahul Singh 👋</div>
+
+      <div class="amount-box">
+        <div class="amount-label">Pending Amount (कुल राशि)</div>
+        <div class="amount-value" id="disp-amount">₹1000.00</div>
+        <div class="amount-sub">Zero Fee • Instant Direct Settlement</div>
+      </div>
+
+      <div class="shop-details">
+        <div class="detail-row">
+          <span class="detail-label">Shop Name:</span>
+          <span class="detail-val">CSC Center Jandwala</span>
         </div>
-
-        <div class="shop-details">
-          <div class="detail-row">
-            <span class="detail-label">To Payee:</span>
-            <span class="detail-val">CSC Center Jandwala</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Shop Mobile:</span>
-            <span class="detail-val">
-              <a href="tel:9781925023" style="color:#059669; text-decoration:none;">9781925023</a>
-            </span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">UPI ID:</span>
-            <span class="detail-val" style="font-family: monospace;">Hxupi@slc</span>
-          </div>
+        <div class="detail-row" style="border-top:1px solid #e2e8f0; padding-top:6px; margin-top:2px;">
+          <span class="detail-label">UPI ID:</span>
+          <button type="button" class="btn-upi-copy" onclick="copyUpi()">
+            <span id="upi-text">Hxupi@slc</span> 📋
+          </button>
         </div>
+        <div class="detail-row" style="border-top:1px solid #e2e8f0; padding-top:6px; margin-top:2px;">
+          <span class="detail-label">Contact:</span>
+          <a href="tel:9781925023" style="color:#059669; font-weight:700; text-decoration:none;">9781925023</a>
+        </div>
+      </div>
 
-        <button id="btn-pay" class="btn-pay-now" onclick="handlePayNow()">
-          PAY NOW
+      <div id="initial-pay-action">
+        <button type="button" class="btn-pay-now" id="btn-pay" onclick="handlePayNow()">
+          PAY NOW ₹1000.00
+        </button>
+        <p style="font-size:11px; color:#64748b; margin-top:8px;">
+          Tap to auto-download QR code & hear voice instructions
+        </p>
+      </div>
+    </div>
+
+    <!-- Revealed Payment & QR Section -->
+    <div id="revealed-section" class="hidden">
+      <!-- Voice Audio Guidance -->
+      <div class="voice-bar">
+        <div>
+          <div style="font-size:12px; font-weight:800;" id="voice-title">हिन्दी वॉइस निर्देश (Hindi Voice Guide)</div>
+          <div style="font-size:10px; color:#a7f3d0;" id="voice-sub">QR कोड डाउनलोड हो चुका है</div>
+        </div>
+        <button type="button" class="voice-btn" id="voice-toggle-btn" onclick="toggleAudio()">
+          🔊 निर्देश सुनें
         </button>
       </div>
 
-      <!-- Payment Reveal Area -->
-      <div id="payment-area" class="hidden">
-        <div class="alert-pill">
-          <span>✅ <strong>QR Code Ready!</strong></span>
-          <button class="voice-btn" onclick="playHindiAudio()">🔊 आवाज़ सुनें</button>
+      <!-- QR Card -->
+      <div class="card">
+        <div class="verified-pill">
+          📷 Scan QR Code
         </div>
 
-        <div class="card">
-          <div style="font-size:12px; font-weight:700; color:#475569;">Scan QR Code with any UPI App</div>
-
-          <div class="qr-box" id="qr-container">
-            <canvas id="qr-canvas" width="220" height="220" style="width:220px; height:220px; display:block; margin:auto;"></canvas>
-            <img id="qr-img-fallback" class="hidden" style="width:220px; height:220px; display:block; margin:auto;" alt="Payment QR Code" />
-            <div style="font-size:12px; font-weight:800; margin-top:6px;" id="qr-amt-label">Pay ₹0.00</div>
+        <div class="qr-box">
+          <canvas id="qr-canvas"></canvas>
+          <img id="qr-fallback-img" alt="Payment QR Code" />
+          <div style="font-size:12px; font-weight:800; color:#0f172a; margin-top:8px;" id="qr-amt-label">
+            Pay ₹1000.00
           </div>
+          <div style="font-size:10px; color:#64748b;">CSC Center Jandwala</div>
+        </div>
 
-          <div style="font-size:11px; font-weight:700; text-transform:uppercase; color:#64748b; margin:12px 0 8px;">
+        <!-- App Launchers -->
+        <div class="app-buttons">
+          <div style="font-size:11px; font-weight:800; color:#64748b; text-transform:uppercase; text-align:left;">
             Select App to Open:
           </div>
 
-          <button class="btn-app btn-gpay" onclick="openApp('gpay')">
+          <button type="button" class="btn-app btn-gpay" onclick="openApp('gpay')">
             <div style="display:flex; align-items:center;">
               <div class="app-icon gpay-icon">G</div>
               <div style="text-align:left;">
@@ -460,10 +501,10 @@
                 <div style="font-size:10px; color:#64748b; font-weight:normal;">Open Scanner</div>
               </div>
             </div>
-            <span class="btn-tag" style="color:#1d4ed8; background:#eff6ff;">Open App →</span>
+            <span class="btn-tag" style="color:#2563eb; background:#eff6ff;">Open GPay →</span>
           </button>
 
-          <button class="btn-app btn-phonepe" onclick="openApp('phonepe')">
+          <button type="button" class="btn-app btn-phonepe" onclick="openApp('phonepe')">
             <div style="display:flex; align-items:center;">
               <div class="app-icon phonepe-icon">पे</div>
               <div style="text-align:left;">
@@ -471,10 +512,10 @@
                 <div style="font-size:10px; color:#64748b; font-weight:normal;">Open Scanner</div>
               </div>
             </div>
-            <span class="btn-tag" style="color:#7e22ce; background:#faf5ff;">Open App →</span>
+            <span class="btn-tag" style="color:#7e22ce; background:#faf5ff;">Open PhonePe →</span>
           </button>
 
-          <button class="btn-app btn-paytm" onclick="openApp('paytm')">
+          <button type="button" class="btn-app btn-paytm" onclick="openApp('paytm')">
             <div style="display:flex; align-items:center;">
               <div class="app-icon paytm-icon">Paytm</div>
               <div style="text-align:left;">
@@ -482,77 +523,45 @@
                 <div style="font-size:10px; color:#64748b; font-weight:normal;">Open Scanner</div>
               </div>
             </div>
-            <span class="btn-tag" style="color:#0284c7; background:#f0f9ff;">Open App →</span>
+            <span class="btn-tag" style="color:#0284c7; background:#f0f9ff;">Open Paytm →</span>
           </button>
 
-          <div style="margin-top:10px;">
-            <a href="#" onclick="downloadBrandedQr(); return false;" style="font-size:11px; color:#059669; font-weight:700; text-decoration:none;">
-              📥 QR कोड फिर से डाउनलोड करें
+          <div style="margin-top:8px;">
+            <a href="#" onclick="downloadBrandedQr(); return false;" style="font-size:12px; color:#059669; font-weight:800; text-decoration:none;">
+              📥 Download QR Card Again
             </a>
           </div>
         </div>
+      </div>
 
-        <div class="steps-card">
-          <div class="steps-title">आसान भुगतान प्रक्रिया (3 Simple Steps):</div>
-          <div class="step-item">
-            <span class="step-num">1</span>
-            <span>ऊपर दिए गए बटन से अपना <strong>Google Pay, PhonePe या Paytm</strong> खोलें।</span>
-          </div>
-          <div class="step-item">
-            <span class="step-num">2</span>
-            <span>ऐप में <strong>Scanner</strong> खोलें और <strong>Gallery</strong> से डाउनलोड किया हुआ QR कोड चुनें।</span>
-          </div>
-          <div class="step-item">
-            <span class="step-num">3</span>
-            <span>राशि <strong>₹<span class="step-amt">0</span></strong> आ जाएगी। UPI PIN डालकर भुगतान पूरा करें।</span>
-          </div>
+      <!-- 3 Simple Steps -->
+      <div class="steps-card">
+        <div class="steps-title">आसान भुगतान प्रक्रिया (3 Simple Steps):</div>
+        <div class="step-item">
+          <span class="step-num">1</span>
+          <span>ऊपर दिए गए बटन से अपना <strong>Google Pay, PhonePe या Paytm</strong> ऐप खोलें।</span>
+        </div>
+        <div class="step-item">
+          <span class="step-num">2</span>
+          <span>ऐप में <strong>Scanner</strong> खोलें और <strong>Gallery</strong> से डाउनलोड किया हुआ QR चुनें।</span>
+        </div>
+        <div class="step-item">
+          <span class="step-num">3</span>
+          <span>राशि <strong>₹<span class="step-amt">1000</span></strong> आ जाएगी। UPI PIN डालकर भुगतान करें।</span>
         </div>
       </div>
     </div>
 
-    <!-- Quick Operator Form -->
-    <div id="quick-creator-section" class="hidden">
-      <div class="card">
-        <h2 style="font-size: 16px; font-weight: 800; color: #1e293b; margin-bottom: 4px;">Quick Payment Link Generator</h2>
-        <p style="font-size: 12px; color: #64748b; margin-bottom: 16px;">Create a direct payment link on your domain</p>
-
-        <div class="form-group">
-          <label class="form-label">Customer Name</label>
-          <input type="text" id="manual-name" class="form-input" placeholder="e.g. Rahul Singh" />
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Amount (₹)</label>
-          <input type="number" id="manual-amount" class="form-input" placeholder="e.g. 1000" />
-        </div>
-
-        <button type="button" class="btn-pay-now" onclick="applyManualData()">
-          Generate & Preview Payment Link
-        </button>
-
-        <div class="info-box">
-          <strong>GitHub Pages URL Format:</strong><br />
-          You can share clean direct URLs with customers:
-          <span class="url-chip" id="url-example-chip">https://hero5869.github.io/TESTPV/#1000-Rahul_Singh</span>
-          The page will automatically parse the amount and name from the URL!
-        </div>
-      </div>
-    </div>
-
+    <!-- Footer -->
     <div class="footer">
-      <div>CSC Center Jandwala • Jandwala</div>
-      <div style="margin-top:4px;">धन्यवाद 🙏</div>
+      <div>CSC Center Jandwala • Village Jandwala</div>
+      <div style="margin-top:4px;">डिजिटल इंडिया • धन्यवाद 🙏</div>
     </div>
   </div>
 
-  <!-- EMBEDDED SELF-CONTAINED QR CODE GENERATOR (100% Offline & Fail-Proof) -->
+  <!-- EMBEDDED QR CODE ENGINE (100% Offline) -->
   <script>
-    /*
-     * Embedded Lightweight QR Code Generation Engine
-     * Generates QR codes directly onto HTML5 Canvas without needing any external CDN or server.
-     */
     var EmbeddedQR = (function() {
-      // Minimal QR Model
       function QRCodeModel(typeNumber, errorCorrectionLevel) {
         this.typeNumber = typeNumber;
         this.errorCorrectionLevel = errorCorrectionLevel;
@@ -561,7 +570,6 @@
         this.dataCache = null;
         this.dataList = [];
       }
-
       QRCodeModel.prototype = {
         addData: function(data) {
           this.dataList.push(new QR8bitByte(data));
@@ -573,29 +581,8 @@
           }
           return this.modules[row][col];
         },
-        getModuleCount: function() {
-          return this.moduleCount;
-        },
+        getModuleCount: function() { return this.moduleCount; },
         make: function() {
-          if (this.typeNumber < 1) {
-            var typeNumber = 1;
-            for (typeNumber = 1; typeNumber < 40; typeNumber++) {
-              var rsBlocks = QRRSBlock.getRSBlocks(typeNumber, this.errorCorrectionLevel);
-              var buffer = new QRBitBuffer();
-              var totalDataCount = 0;
-              for (var i = 0; i < rsBlocks.length; i++) {
-                totalDataCount += rsBlocks[i].dataCount;
-              }
-              for (var i = 0; i < this.dataList.length; i++) {
-                var data = this.dataList[i];
-                buffer.put(data.mode, 4);
-                buffer.put(data.getLength(), QRUtil.getLengthInBits(data.mode, typeNumber));
-                data.write(buffer);
-              }
-              if (buffer.getLengthInBits() <= totalDataCount * 8) break;
-            }
-            this.typeNumber = typeNumber;
-          }
           this.makeImpl(false, this.getBestMaskPattern());
         },
         makeImpl: function(test, maskPattern) {
@@ -626,7 +613,9 @@
             if (row + r <= -1 || this.moduleCount <= row + r) continue;
             for (var c = -1; c <= 7; c++) {
               if (col + c <= -1 || this.moduleCount <= col + c) continue;
-              if ((0 <= r && r <= 6 && (c == 0 || c == 6)) || (0 <= c && c <= 6 && (r == 0 || r == 6)) || (2 <= r && r <= 4 && 2 <= c && c <= 4)) {
+              if ((0 <= r && r <= 6 && (c == 0 || c == 6)) ||
+                  (0 <= c && c <= 6 && (r == 0 || r == 6)) ||
+                  (2 <= r && r <= 4 && 2 <= c && c <= 4)) {
                 this.modules[row + r][col + c] = true;
               } else {
                 this.modules[row + r][col + c] = false;
@@ -676,19 +665,8 @@
             }
           }
         },
-        setupTypeNumber: function(test) {
-          var bits = QRUtil.getBCHTypeNumber(this.typeNumber);
-          for (var i = 0; i < 18; i++) {
-            var mod = (!test && ((bits >> i) & 1) == 1);
-            this.modules[Math.floor(i / 3)][i % 3 + this.moduleCount - 8 - 3] = mod;
-          }
-          for (var i = 0; i < 18; i++) {
-            var mod = (!test && ((bits >> i) & 1) == 1);
-            this.modules[i % 3 + this.moduleCount - 8 - 3][Math.floor(i / 3)] = mod;
-          }
-        },
         setupTypeInfo: function(test, maskPattern) {
-          var data = (this.errorCorrectionLevel << 3) | maskPattern;
+          var data = (1 << 3) | maskPattern;
           var bits = QRUtil.getBCHTypeInfo(data);
           for (var i = 0; i < 15; i++) {
             var mod = (!test && ((bits >> i) & 1) == 1);
@@ -699,9 +677,6 @@
             } else {
               this.modules[this.moduleCount - 15 + i][8] = mod;
             }
-          }
-          for (var i = 0; i < 15; i++) {
-            var mod = (!test && ((bits >> i) & 1) == 1);
             if (i < 8) {
               this.modules[8][this.moduleCount - i - 1] = mod;
             } else if (i < 9) {
@@ -712,11 +687,20 @@
           }
           this.modules[this.moduleCount - 8][8] = (!test);
         },
+        setupTypeNumber: function(test) {
+          var bits = QRUtil.getBCHTypeNumber(this.typeNumber);
+          for (var i = 0; i < 18; i++) {
+            var mod = (!test && ((bits >> i) & 1) == 1);
+            this.modules[Math.floor(i / 3)][i % 3 + this.moduleCount - 8 - 3] = mod;
+            this.modules[i % 3 + this.moduleCount - 8 - 3][Math.floor(i / 3)] = mod;
+          }
+        },
         mapData: function(data, maskPattern) {
           var inc = -1;
           var row = this.moduleCount - 1;
           var bitIndex = 7;
           var byteIndex = 0;
+          var maskFunc = QRUtil.getMask(maskPattern);
           for (var col = this.moduleCount - 1; col > 0; col -= 2) {
             if (col == 6) col--;
             while (true) {
@@ -726,10 +710,8 @@
                   if (byteIndex < data.length) {
                     dark = (((data[byteIndex] >>> bitIndex) & 1) == 1);
                   }
-                  var mask = QRUtil.getMask(maskPattern, row, col - c);
-                  if (mask) {
-                    dark = !dark;
-                  }
+                  var mask = maskFunc(row, col - c);
+                  if (mask) dark = !dark;
                   this.modules[row][col - c] = dark;
                   bitIndex--;
                   if (bitIndex == -1) {
@@ -763,7 +745,7 @@
           totalDataCount += rsBlocks[i].dataCount;
         }
         if (buffer.getLengthInBits() > totalDataCount * 8) {
-          throw new Error("code length overflow");
+          throw new Error("code length overflow. (" + buffer.getLengthInBits() + ">" + totalDataCount * 8 + ")");
         }
         if (buffer.getLengthInBits() + 4 <= totalDataCount * 8) {
           buffer.put(0, 4);
@@ -773,7 +755,7 @@
         }
         while (true) {
           if (buffer.getLengthInBits() >= totalDataCount * 8) break;
-          buffer.put(0xec, 8);
+          buffer.put(0xEC, 8);
           if (buffer.getLengthInBits() >= totalDataCount * 8) break;
           buffer.put(0x11, 8);
         }
@@ -793,7 +775,7 @@
           maxEcCount = Math.max(maxEcCount, ecCount);
           dcdata[r] = new Array(dcCount);
           for (var i = 0; i < dcdata[r].length; i++) {
-            dcdata[r][i] = 0xff & buffer.buffer[i + offset];
+            dcdata[r][i] = 0xFF & buffer.buffer[i + offset];
           }
           offset += dcCount;
           var rsPoly = QRUtil.getErrorCorrectPolynomial(ecCount);
@@ -813,16 +795,12 @@
         var index = 0;
         for (var i = 0; i < maxDcCount; i++) {
           for (var r = 0; r < rsBlocks.length; r++) {
-            if (i < dcdata[r].length) {
-              data[index++] = dcdata[r][i];
-            }
+            if (i < dcdata[r].length) data[index++] = dcdata[r][i];
           }
         }
         for (var i = 0; i < maxEcCount; i++) {
           for (var r = 0; r < rsBlocks.length; r++) {
-            if (i < ecdata[r].length) {
-              data[index++] = ecdata[r][i];
-            }
+            if (i < ecdata[r].length) data[index++] = ecdata[r][i];
           }
         }
         return data;
@@ -833,20 +811,80 @@
         this.data = data;
       }
       QR8bitByte.prototype = {
-        getLength: function() { return unescape(encodeURIComponent(this.data)).length; },
+        getLength: function() { return encodeURI(this.data).replace(/%../g, "i").length; },
         write: function(buffer) {
-          var utf8 = unescape(encodeURIComponent(this.data));
-          for (var i = 0; i < utf8.length; i++) {
-            buffer.put(utf8.charCodeAt(i), 8);
+          for (var i = 0; i < this.data.length; i++) {
+            var c = this.data.charCodeAt(i);
+            if (c < 128) {
+              buffer.put(c, 8);
+            } else if (c < 2048) {
+              buffer.put(192 | (c >> 6), 8);
+              buffer.put(128 | (c & 63), 8);
+            } else {
+              buffer.put(224 | (c >> 12), 8);
+              buffer.put(128 | ((c >> 6) & 63), 8);
+              buffer.put(128 | (c & 63), 8);
+            }
           }
+        }
+      };
+
+      var QRRSBlock = {
+        RS_BLOCK_TABLE: [
+          [1, 26, 19], [1, 26, 16], [1, 26, 13], [1, 26, 9],
+          [1, 44, 34], [1, 44, 28], [1, 44, 22], [1, 44, 16],
+          [1, 70, 55], [1, 70, 44], [2, 35, 17], [2, 35, 13],
+          [1, 100, 80], [2, 50, 32], [2, 50, 24], [4, 25, 9],
+          [1, 134, 108], [2, 67, 43], [2, 33, 15, 2, 34, 16], [2, 33, 11, 2, 34, 12],
+          [2, 86, 68], [4, 43, 27], [4, 43, 19], [4, 43, 15],
+          [2, 98, 78], [4, 49, 31], [2, 32, 14, 4, 33, 15], [4, 39, 13, 1, 40, 14],
+          [2, 121, 97], [2, 60, 38, 2, 61, 39], [4, 40, 18, 2, 41, 19], [4, 40, 14, 2, 41, 15],
+          [2, 146, 116], [3, 58, 36, 2, 59, 37], [4, 36, 16, 4, 37, 17], [4, 36, 12, 4, 37, 13],
+          [2, 86, 68, 2, 87, 69], [4, 69, 43, 1, 70, 44], [6, 43, 19, 2, 44, 20], [6, 43, 15, 2, 44, 16]
+        ],
+        getRSBlocks: function(typeNumber, errorCorrectionLevel) {
+          var qrRSBlock = QRRSBlock.getRsBlockTable(typeNumber, errorCorrectionLevel);
+          var length = qrRSBlock.length / 3;
+          var list = [];
+          for (var i = 0; i < length; i++) {
+            var count = qrRSBlock[i * 3 + 0];
+            var totalCount = qrRSBlock[i * 3 + 1];
+            var dataCount = qrRSBlock[i * 3 + 2];
+            for (var j = 0; j < count; j++) {
+              list.push({ totalCount: totalCount, dataCount: dataCount });
+            }
+          }
+          return list;
+        },
+        getRsBlockTable: function(typeNumber, errorCorrectionLevel) {
+          return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + errorCorrectionLevel];
+        }
+      };
+
+      function QRBitBuffer() {
+        this.buffer = [];
+        this.length = 0;
+      }
+      QRBitBuffer.prototype = {
+        get: function(index) { return ((this.buffer[Math.floor(index / 8)] >>> (7 - index % 8)) & 1) == 1; },
+        put: function(num, length) {
+          for (var i = 0; i < length; i++) {
+            this.putBit(((num >>> (length - i - 1)) & 1) == 1);
+          }
+        },
+        getLengthInBits: function() { return this.length; },
+        putBit: function(bit) {
+          var bufIndex = Math.floor(this.length / 8);
+          if (this.buffer.length <= bufIndex) this.buffer.push(0);
+          if (bit) this.buffer[bufIndex] |= (0x80 >>> (this.length % 8));
+          this.length++;
         }
       };
 
       var QRUtil = {
         PATTERN_POSITION_TABLE: [
           [], [6, 18], [6, 22], [6, 26], [6, 30], [6, 34],
-          [6, 22, 38], [6, 24, 42], [6, 26, 46], [6, 28, 50], [6, 30, 54],
-          [6, 32, 58], [6, 34, 62], [6, 26, 46, 66], [6, 26, 48, 70]
+          [6, 22, 38], [6, 24, 42], [6, 26, 46], [6, 28, 50]
         ],
         G15: (1 << 10) | (1 << 8) | (1 << 5) | (1 << 4) | (1 << 2) | (1 << 1) | (1 << 0),
         G18: (1 << 12) | (1 << 11) | (1 << 10) | (1 << 9) | (1 << 8) | (1 << 5) | (1 << 2) | (1 << 0),
@@ -873,16 +911,16 @@
         getPatternPosition: function(typeNumber) {
           return QRUtil.PATTERN_POSITION_TABLE[typeNumber - 1] || [];
         },
-        getMask: function(maskPattern, i, j) {
+        getMask: function(maskPattern) {
           switch (maskPattern) {
-            case 0: return (i + j) % 2 == 0;
-            case 1: return i % 2 == 0;
-            case 2: return j % 3 == 0;
-            case 3: return (i + j) % 3 == 0;
-            case 4: return (Math.floor(i / 2) + Math.floor(j / 3)) % 2 == 0;
-            case 5: return (i * j) % 2 + (i * j) % 3 == 0;
-            case 6: return ((i * j) % 2 + (i * j) % 3) % 2 == 0;
-            case 7: return ((i * j) % 3 + (i + j) % 2) % 2 == 0;
+            case 0: return function(i, j) { return (i + j) % 2 == 0; };
+            case 1: return function(i, j) { return i % 2 == 0; };
+            case 2: return function(i, j) { return j % 3 == 0; };
+            case 3: return function(i, j) { return (i + j) % 3 == 0; };
+            case 4: return function(i, j) { return (Math.floor(i / 2) + Math.floor(j / 3)) % 2 == 0; };
+            case 5: return function(i, j) { return (i * j) % 2 + (i * j) % 3 == 0; };
+            case 6: return function(i, j) { return ((i * j) % 2 + (i * j) % 3) % 2 == 0; };
+            case 7: return function(i, j) { return ((i * j) % 3 + (i + j) % 2) % 2 == 0; };
             default: throw new Error("bad maskPattern:" + maskPattern);
           }
         },
@@ -895,7 +933,6 @@
         },
         getLengthInBits: function(mode, type) {
           if (1 <= type && type < 10) return 8;
-          if (type < 27) return 16;
           return 16;
         },
         getLostPoint: function(qrCode) {
@@ -960,120 +997,46 @@
           var ratio = QRMath.glog(this.get(0)) - QRMath.glog(e.get(0));
           var num = new Array(this.getLength());
           for (var i = 0; i < this.getLength(); i++) num[i] = this.get(i);
-          for (var i = 0; i < e.getLength(); i++) {
-            num[i] ^= QRMath.gexp(QRMath.glog(e.get(i)) + ratio);
-          }
+          for (var i = 0; i < e.getLength(); i++) num[i] ^= QRMath.gexp(QRMath.glog(e.get(i)) + ratio);
           return new QRPolynomial(num, 0).mod(e);
         }
       };
 
-      function QRRSBlock(totalCount, dataCount) {
-        this.totalCount = totalCount;
-        this.dataCount = dataCount;
-      }
-      QRRSBlock.RS_BLOCK_TABLE = [
-        [1, 26, 19], [1, 26, 16], [1, 26, 13], [1, 26, 9],
-        [1, 44, 34], [1, 44, 28], [1, 44, 22], [1, 44, 16],
-        [1, 70, 55], [1, 70, 44], [2, 35, 17], [2, 35, 13],
-        [1, 100, 80], [2, 50, 32], [2, 50, 24], [4, 25, 9],
-        [1, 134, 108], [2, 67, 43], [2, 33, 15, 2, 34, 16], [2, 33, 11, 2, 34, 12],
-        [2, 86, 68], [4, 43, 27], [4, 43, 19], [4, 43, 15],
-        [2, 98, 78], [4, 49, 31], [2, 32, 14, 4, 33, 15], [4, 39, 13, 1, 40, 14],
-        [2, 121, 97], [2, 60, 38, 2, 61, 39], [4, 40, 18, 2, 41, 19], [4, 40, 14, 2, 41, 15],
-        [2, 146, 116], [3, 58, 36, 2, 59, 37], [4, 36, 16, 4, 37, 17], [4, 36, 12, 4, 37, 13],
-        [2, 86, 68, 2, 87, 69], [4, 69, 43, 1, 70, 44], [6, 43, 19, 2, 44, 20], [6, 43, 15, 2, 44, 16]
-      ];
-      QRRSBlock.getRSBlocks = function(typeNumber, errorCorrectionLevel) {
-        var rsBlock = QRRSBlock.getRsBlockTable(typeNumber, errorCorrectionLevel);
-        if (rsBlock == undefined) throw new Error("bad rs block @ typeNumber:" + typeNumber);
-        var length = rsBlock.length / 3;
-        var list = [];
-        for (var i = 0; i < length; i++) {
-          var count = rsBlock[i * 3 + 0];
-          var totalCount = rsBlock[i * 3 + 1];
-          var dataCount = rsBlock[i * 3 + 2];
-          for (var j = 0; j < count; j++) list.push(new QRRSBlock(totalCount, dataCount));
-        }
-        return list;
-      };
-      QRRSBlock.getRsBlockTable = function(typeNumber, errorCorrectionLevel) {
-        switch (errorCorrectionLevel) {
-          case 1: return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 0];
-          case 0: return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 1];
-          case 3: return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 2];
-          case 2: return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 3];
-          default: return undefined;
-        }
-      };
-
-      function QRBitBuffer() {
-        this.buffer = [];
-        this.length = 0;
-      }
-      QRBitBuffer.prototype = {
-        get: function(index) {
-          var bufIndex = Math.floor(index / 8);
-          return ((this.buffer[bufIndex] >>> (7 - index % 8)) & 1) == 1;
-        },
-        put: function(num, length) {
-          for (var i = 0; i < length; i++) {
-            this.putBit(((num >>> (length - i - 1)) & 1) == 1);
-          }
-        },
-        getLengthInBits: function() { return this.length; },
-        putBit: function(bit) {
-          var bufIndex = Math.floor(this.length / 8);
-          if (this.buffer.length <= bufIndex) this.buffer.push(0);
-          if (bit) this.buffer[bufIndex] |= (0x80 >>> (this.length % 8));
-          this.length++;
-        }
-      };
-
-      // Public API: Render QR to Canvas
       return {
-        drawToCanvas: function(canvas, text, size) {
-          if (!canvas) return false;
-          try {
-            var qr = new QRCodeModel(0, 0); // Level M
-            qr.addData(text);
-            qr.make();
-
-            var ctx = canvas.getContext('2d');
-            var moduleCount = qr.getModuleCount();
-            var targetSize = size || canvas.width || 220;
-            canvas.width = targetSize;
-            canvas.height = targetSize;
-
-            var margin = 2;
-            var cellSize = targetSize / (moduleCount + margin * 2);
-
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(0, 0, targetSize, targetSize);
-
-            ctx.fillStyle = '#0f172a';
-            for (var row = 0; row < moduleCount; row++) {
-              for (var col = 0; col < moduleCount; col++) {
-                if (qr.isDark(row, col)) {
-                  ctx.fillRect(
-                    Math.round((col + margin) * cellSize),
-                    Math.round((row + margin) * cellSize),
-                    Math.ceil(cellSize),
-                    Math.ceil(cellSize)
-                  );
-                }
+        drawCanvas: function(canvas, text, size) {
+          size = size || 230;
+          canvas.width = size;
+          canvas.height = size;
+          var ctx = canvas.getContext('2d');
+          var qr;
+          for (var type = 1; type <= 10; type++) {
+            try {
+              qr = new QRCodeModel(type, 1);
+              qr.addData(text);
+              qr.make();
+              break;
+            } catch (e) {}
+          }
+          if (!qr) return false;
+          var count = qr.getModuleCount();
+          var tile = size / (count + 2);
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, size, size);
+          ctx.fillStyle = '#064e3b';
+          for (var r = 0; r < count; r++) {
+            for (var c = 0; c < count; c++) {
+              if (qr.isDark(r, c)) {
+                ctx.fillRect(Math.round((c + 1) * tile), Math.round((r + 1) * tile), Math.ceil(tile), Math.ceil(tile));
               }
             }
-            return true;
-          } catch (e) {
-            console.error('Embedded QR error:', e);
-            return false;
           }
+          return true;
         }
       };
     })();
   </script>
 
-  <!-- MAIN PAGE SCRIPT: URL PARSING & PAYMENT CONTROLS -->
+  <!-- MAIN PAGE SCRIPT -->
   <script>
     const upiId = "Hxupi@slc";
     const shopName = "CSC Center Jandwala";
@@ -1085,48 +1048,36 @@
     let currentCustomerName = "Customer";
     let currentAmount = 0;
     let upiUri = "";
+    let isPlayingAudio = false;
 
     /**
-     * ROCK-SOLID URL PARSER
-     * Handles:
-     * 1. https://hero5869.github.io/TESTPV/#1000-Rahul_Singh
-     * 2. https://hero5869.github.io/TESTPV/#1000_Rahul_Singh
-     * 3. https://hero5869.github.io/TESTPV/#/1000-Rahul_Singh
-     * 4. https://hero5869.github.io/TESTPV/#Rahul_Singh-1000
-     * 5. ?a=1000&n=Rahul_Singh or ?amount=1000&name=Rahul_Singh
-     * 6. /TESTPV/1000-Rahul_Singh
+     * EXACT WORKING URL PULLING LOGIC
      */
     function parseDetailsFromUrl() {
       let name = "";
       let amount = 0;
 
-      // PRIORITY 1: Parse window.location.hash directly (Clean GitHub Pages & Hash Links)
-      const rawHash = (window.location.hash || "").replace(/^#/?/, "").trim();
-      if (rawHash) {
-        const decodedHash = decodeURIComponent(rawHash);
+      // 1. Read the URL hash directly (e.g. #1000-Rahul_Singh or #10-Rahul)
+      const hash = decodeURIComponent(window.location.hash.substring(1)).trim();
+      if (hash) {
+        const cleanHash = hash.replace(/^\/+/, "");
+        const sepIndexHyphen = cleanHash.indexOf("-");
+        const sepIndexUnderscore = cleanHash.indexOf("_");
+        const separator = sepIndexHyphen !== -1 ? sepIndexHyphen : sepIndexUnderscore;
 
-        // Pattern 1: 1000-Rahul_Singh or 1000_Rahul_Singh or 1000-Rahul-Singh
-        const matchAmtFirst = decodedHash.match(/^(\d+(?:\.\d+)?)[-_/](.+)$/);
-        if (matchAmtFirst) {
-          const parsedAmt = parseFloat(matchAmtFirst[1]);
-          if (!isNaN(parsedAmt) && parsedAmt > 0) {
-            amount = parsedAmt;
-            name = matchAmtFirst[2];
-          }
-        } else {
-          // Pattern 2: Rahul_Singh-1000
-          const matchNameFirst = decodedHash.match(/^(.+)[-_/](\d+(?:\.\d+)?)$/);
-          if (matchNameFirst && isNaN(Number(matchNameFirst[1]))) {
-            const parsedAmt = parseFloat(matchNameFirst[2]);
-            if (!isNaN(parsedAmt) && parsedAmt > 0) {
-              amount = parsedAmt;
-              name = matchNameFirst[1];
-            }
+        if (separator !== -1) {
+          const amountPart = cleanHash.substring(0, separator);
+          const namePart = cleanHash.substring(separator + 1);
+          const parsedAmount = parseFloat(amountPart);
+
+          if (!isNaN(parsedAmount) && parsedAmount > 0) {
+            amount = parsedAmount;
+            name = namePart;
           }
         }
       }
 
-      // PRIORITY 2: Query Parameters (?a=1000&n=Rahul_Singh)
+      // 2. Query parameters (?a=1000&n=Rahul_Singh or ?amount=1000&name=Rahul_Singh)
       if (!amount || !name) {
         const params = new URLSearchParams(window.location.search);
         if (params.has("a") || params.has("amount")) {
@@ -1137,30 +1088,40 @@
         }
       }
 
-      // PRIORITY 3: Path Segments (e.g. /TESTPV/1000-Rahul_Singh)
+      // 3. Path format (/TESTPV/1000-Rahul_Singh)
       if (!amount || !name) {
-        const pathSegments = decodeURIComponent(window.location.pathname).split("/").filter(Boolean);
-        for (let i = pathSegments.length - 1; i >= 0; i--) {
-          const seg = pathSegments[i];
-          const m1 = seg.match(/^(\d+(?:\.\d+)?)[-_](.+)$/);
-          if (m1) {
-            const parsedAmt = parseFloat(m1[1]);
-            if (!isNaN(parsedAmt) && parsedAmt > 0) {
-              amount = parsedAmt;
-              name = m1[2];
+        const candidates = [
+          decodeURIComponent(window.location.pathname),
+          window.location.search.replace(/^\?/, "")
+        ];
+
+        for (const raw of candidates) {
+          if (!raw) continue;
+          const segments = raw.split(/[\/\?#&]/).filter(Boolean);
+          for (const seg of segments) {
+            const match1 = seg.match(/^(\d+(?:\.\d+)?)[-_](.+)$/);
+            if (match1) {
+              if (!amount) { amount = parseFloat(match1[1]) || 0; }
+              if (!name) { name = match1[2]; }
+              break;
+            }
+            const match2 = seg.match(/^(.+)[-_](\d+(?:\.\d+)?)$/);
+            if (match2 && isNaN(Number(match2[1]))) {
+              if (!amount) { amount = parseFloat(match2[2]) || 0; }
+              if (!name) { name = match2[1]; }
               break;
             }
           }
+          if (amount && name) { break; }
         }
       }
 
-      // Format customer name cleanly
+      // Clean customer name
       if (name) {
         name = decodeURIComponent(name)
           .replace(/[_+]/g, " ")
-          .replace(/[-]/g, " ")
+          .replace(/-/g, " ")
           .trim();
-        // Capitalize first letter of every word
         name = name.replace(/\b\w/g, function(char) { return char.toUpperCase(); });
       }
 
@@ -1169,35 +1130,19 @@
 
     function initPage() {
       const parsed = parseDetailsFromUrl();
-      const customerSection = document.getElementById("customer-view-section");
-      const creatorSection = document.getElementById("quick-creator-section");
       const sampleNotice = document.getElementById("sample-notice");
 
-      if (parsed.amount > 0 || parsed.name) {
-        currentCustomerName = parsed.name || "Customer";
-        currentAmount = parsed.amount || 0;
+      if (parsed.amount > 0 && parsed.name) {
+        currentCustomerName = parsed.name;
+        currentAmount = parsed.amount;
         if (sampleNotice) sampleNotice.classList.add("hidden");
-        customerSection.classList.remove("hidden");
-        creatorSection.classList.add("hidden");
-        renderCustomerView();
-      } else if (defaultFallbackName && defaultFallbackAmount > 0) {
-        // Fallback sample data if opened directly without URL hash
+      } else {
         currentCustomerName = defaultFallbackName;
         currentAmount = defaultFallbackAmount;
         if (sampleNotice) sampleNotice.classList.remove("hidden");
-        customerSection.classList.remove("hidden");
-        creatorSection.classList.add("hidden");
-        renderCustomerView();
-      } else {
-        customerSection.classList.add("hidden");
-        creatorSection.classList.remove("hidden");
-
-        const currentOrigin = window.location.origin + window.location.pathname.replace(/\/[^/]*$/, "");
-        const exampleChip = document.getElementById("url-example-chip");
-        if (exampleChip) {
-          exampleChip.innerText = currentOrigin + "/#1000-Rahul_Singh";
-        }
       }
+
+      renderCustomerView();
     }
 
     function renderCustomerView() {
@@ -1223,155 +1168,231 @@
       renderQr();
     }
 
-    function applyManualData() {
-      const nameInput = document.getElementById("manual-name").value.trim();
-      const amtInput = parseFloat(document.getElementById("manual-amount").value) || 0;
-
-      if (!nameInput || amtInput <= 0) {
-        alert("Please enter both customer name and a valid amount.");
-        return;
-      }
-
-      const cleanNameSlug = nameInput.replace(/\s+/g, "_");
-      window.location.hash = "#" + amtInput + "-" + cleanNameSlug;
-    }
-
-    /**
-     * RENDER QR CODE - TRIPLE REDUNDANCY
-     * 1. Embedded Pure JS Engine (Zero Network / 100% Offline)
-     * 2. QRCode library CDN if available
-     * 3. Instant Dynamic Image API Fallback
-     */
     function renderQr() {
       const canvas = document.getElementById("qr-canvas");
-      const imgFallback = document.getElementById("qr-img-fallback");
-
-      if (!upiUri) return;
-
+      const fallbackImg = document.getElementById("qr-fallback-img");
       let rendered = false;
 
-      // 1. Try embedded pure JS engine
-      if (typeof EmbeddedQR !== "undefined" && canvas) {
-        rendered = EmbeddedQR.drawToCanvas(canvas, upiUri, 220);
+      // 1. Try embedded QR engine
+      try {
+        if (EmbeddedQR && canvas) {
+          rendered = EmbeddedQR.drawCanvas(canvas, upiUri, 230);
+        }
+      } catch (e) {
+        console.warn("Embedded QR error:", e);
       }
 
-      // 2. Try window.QRCode library if loaded
-      if (!rendered && typeof window.QRCode !== "undefined" && canvas) {
+      // 2. Try window.QRCode (jsdelivr or cloudflare)
+      if (!rendered && window.QRCode && canvas) {
         try {
-          if (typeof QRCode.toCanvas === "function") {
-            QRCode.toCanvas(canvas, upiUri, { width: 220, margin: 1, errorCorrectionLevel: "H" });
-            rendered = true;
-          } else if (typeof QRCode === "function") {
-            // qrcodejs style
-            new QRCode(canvas, { text: upiUri, width: 220, height: 220 });
-            rendered = true;
+          if (typeof QRCode.toCanvas === 'function') {
+            QRCode.toCanvas(canvas, upiUri, { width: 230, margin: 1, color: { dark: '#064e3b', light: '#ffffff' } }, function(err) {
+              if (!err) rendered = true;
+            });
           }
         } catch (e) {
-          console.warn("QRCode CDN render failed:", e);
+          console.warn("CDN QR error:", e);
         }
       }
 
-      // 3. Fallback to dynamic image if canvas is unavailable
-      if (!rendered && imgFallback) {
-        imgFallback.src = "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" + encodeURIComponent(upiUri);
-        imgFallback.classList.remove("hidden");
-        if (canvas) canvas.classList.add("hidden");
+      // 3. High-res image fallback
+      if (fallbackImg) {
+        fallbackImg.src = "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" + encodeURIComponent(upiUri);
+        if (!rendered) {
+          if (canvas) canvas.style.display = "none";
+          fallbackImg.style.display = "block";
+        }
       }
     }
 
-    function playHindiAudio() {
-      if ("speechSynthesis" in window) {
-        window.speechSynthesis.cancel();
-        const text = "नमस्ते " + currentCustomerName + " जी। कृपया अपना कोई भी यूपीआई ऐप जैसे गूगल पे, फोनपे या पेटीएम खोलें। स्कैनर में जाकर गैलरी से अभी डाउनलोड किया गया क्यूआर कोड चुनें और " + Math.round(currentAmount) + " रुपये का भुगतान करें। धन्यवाद।";
-        const msg = new SpeechSynthesisUtterance(text);
-        msg.lang = "hi-IN";
-        msg.rate = 0.9;
-        window.speechSynthesis.speak(msg);
-      }
+    function handlePayNow() {
+      const revealed = document.getElementById("revealed-section");
+      if (revealed) revealed.classList.remove("hidden");
+
+      // Auto download branded QR
+      downloadBrandedQr();
+
+      // Play Hindi audio
+      setTimeout(function() {
+        playHindiVoice();
+      }, 200);
+
+      // Scroll to revealed section
+      setTimeout(function() {
+        revealed.scrollIntoView({ behavior: "smooth" });
+      }, 300);
     }
 
     function downloadBrandedQr() {
       const canvas = document.createElement("canvas");
-      canvas.width = 600;
-      canvas.height = 750;
+      const width = 640;
+      const height = 900;
+      canvas.width = width;
+      canvas.height = height;
       const ctx = canvas.getContext("2d");
 
-      // White background
-      ctx.fillStyle = "#ffffff";
-      ctx.fillRect(0, 0, 600, 750);
+      if (!ctx) return;
 
-      // Header emerald banner
-      ctx.fillStyle = "#047857";
-      ctx.fillRect(0, 0, 600, 130);
-
-      // Shop title & UPI
+      // Background
       ctx.fillStyle = "#ffffff";
-      ctx.font = "bold 26px sans-serif";
+      ctx.fillRect(0, 0, width, height);
+
+      // Header Banner
+      const grad = ctx.createLinearGradient(0, 0, width, 140);
+      grad.addColorStop(0, "#064e3b");
+      grad.addColorStop(1, "#0f766e");
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, width, 140);
+
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "bold 28px sans-serif";
       ctx.textAlign = "center";
-      ctx.fillText(shopName, 300, 55);
+      ctx.fillText(shopName, width / 2, 55);
 
-      ctx.font = "16px sans-serif";
-      ctx.fillText("Official Payment QR • UPI: " + upiId, 300, 95);
+      ctx.fillStyle = "#a7f3d0";
+      ctx.font = "500 16px sans-serif";
+      ctx.fillText("Official Payment QR • Phone: " + phone, width / 2, 90);
 
-      // Customer & Amount
-      ctx.fillStyle = "#1e293b";
-      ctx.font = "bold 20px sans-serif";
-      ctx.fillText("Pay for: " + currentCustomerName + " | Amount: ₹" + currentAmount.toFixed(2), 300, 180);
+      ctx.fillStyle = "#ecfdf5";
+      ctx.font = "bold 15px sans-serif";
+      ctx.fillText("UPI: " + upiId, width / 2, 120);
 
-      // Draw QR Code onto branded card
-      const tempQrCanvas = document.createElement("canvas");
-      if (typeof EmbeddedQR !== "undefined") {
-        EmbeddedQR.drawToCanvas(tempQrCanvas, upiUri, 300);
-      } else {
-        const existingCanvas = document.getElementById("qr-canvas");
-        if (existingCanvas) {
-          tempQrCanvas.width = 300;
-          tempQrCanvas.height = 300;
-          tempQrCanvas.getContext("2d").drawImage(existingCanvas, 0, 0, 300, 300);
-        }
+      // Customer Info Box
+      ctx.fillStyle = "#f8fafc";
+      ctx.beginPath();
+      ctx.roundRect(30, 160, width - 60, 90, 14);
+      ctx.fill();
+
+      ctx.fillStyle = "#64748b";
+      ctx.font = "600 15px sans-serif";
+      ctx.textAlign = "left";
+      ctx.fillText("Customer: " + currentCustomerName, 50, 200);
+
+      ctx.fillStyle = "#047857";
+      ctx.font = "bold 28px sans-serif";
+      ctx.textAlign = "right";
+      ctx.fillText("₹" + currentAmount.toFixed(2), width - 50, 215);
+
+      // QR Code Box
+      const qrCanvas = document.getElementById("qr-canvas");
+      if (qrCanvas) {
+        ctx.drawImage(qrCanvas, (width - 450) / 2, 275, 450, 450);
       }
 
-      ctx.drawImage(tempQrCanvas, 150, 220, 300, 300);
+      // Bottom Instructions
+      ctx.fillStyle = "#f1f5f9";
+      ctx.beginPath();
+      ctx.roundRect(30, 755, width - 60, 95, 14);
+      ctx.fill();
 
-      // Instructions footer
+      ctx.fillStyle = "#0f172a";
+      ctx.font = "bold 16px sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("Scan QR using Google Pay, PhonePe, Paytm or BHIM", width / 2, 795);
+
       ctx.fillStyle = "#64748b";
-      ctx.font = "14px sans-serif";
-      ctx.fillText("Open Google Pay / PhonePe / Paytm → Scanner → Choose from Gallery", 300, 580);
+      ctx.font = "500 13px sans-serif";
+      ctx.fillText("Go to UPI App → Scanner → Choose saved image from Gallery", width / 2, 825);
 
       const link = document.createElement("a");
       link.href = canvas.toDataURL("image/png");
       link.download = "CSC_Jandwala_Pay_Rs_" + Math.round(currentAmount) + ".png";
+      document.body.appendChild(link);
       link.click();
+      document.body.removeChild(link);
     }
 
-    function handlePayNow() {
-      document.getElementById("btn-pay").style.display = "none";
-      document.getElementById("payment-area").classList.remove("hidden");
+    function playHindiVoice() {
+      if (!("speechSynthesis" in window)) return;
+      window.speechSynthesis.cancel();
 
-      renderQr();
-      setTimeout(downloadBrandedQr, 100);
-      setTimeout(playHindiAudio, 200);
+      const roundedAmount = Math.round(currentAmount);
+      const text = "नमस्ते " + currentCustomerName + " जी। कृपया अपना कोई भी यूपीआई ऐप जैसे गूगल पे, फोनपे या पेटीएम खोलें। स्कैनर में जाकर गैलरी से डाउनलोड किया हुआ क्यूआर कोड चुनें। " + roundedAmount + " रुपये की राशि आ जाएगी। अपना यूपीआई पिन डालकर भुगतान पूरा करें। धन्यवाद, सीएससी सेंटर जंडवाला।";
+
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "hi-IN";
+      utterance.rate = 0.88;
+
+      const voices = window.speechSynthesis.getVoices();
+      const hindi = voices.find(function(v) { return v.lang.startsWith("hi") || v.name.toLowerCase().indexOf("hindi") !== -1; });
+      if (hindi) utterance.voice = hindi;
+
+      utterance.onstart = function() {
+        isPlayingAudio = true;
+        updateVoiceUi();
+      };
+      utterance.onend = function() {
+        isPlayingAudio = false;
+        updateVoiceUi();
+      };
+      utterance.onerror = function() {
+        isPlayingAudio = false;
+        updateVoiceUi();
+      };
+
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function toggleAudio() {
+      if (isPlayingAudio) {
+        if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+        isPlayingAudio = false;
+        updateVoiceUi();
+      } else {
+        playHindiVoice();
+      }
+    }
+
+    function updateVoiceUi() {
+      const btn = document.getElementById("voice-toggle-btn");
+      const title = document.getElementById("voice-title");
+      if (btn) {
+        if (isPlayingAudio) {
+          btn.innerText = "⏹ आवाज़ बंद करें";
+          btn.classList.add("active");
+          if (title) title.innerText = "🔊 निर्देश चालू हैं...";
+        } else {
+          btn.innerText = "🔊 निर्देश फिर सुनें";
+          btn.classList.remove("active");
+          if (title) title.innerText = "हिन्दी वॉइस निर्देश (Hindi Voice Guide)";
+        }
+      }
     }
 
     function openApp(app) {
       const isAndroid = /android/i.test(navigator.userAgent);
+      let targetUrl = "upi://";
+
       if (app === "gpay") {
-        window.location.href = isAndroid
+        targetUrl = isAndroid
           ? "intent://upi/scan#Intent;scheme=gpay;package=com.google.android.apps.nbu.paisa.user;end"
           : "gpay://upi/scan";
       } else if (app === "phonepe") {
-        window.location.href = isAndroid
+        targetUrl = isAndroid
           ? "intent://scan#Intent;scheme=phonepe;package=com.phonepe.app;end"
           : "phonepe://scan";
       } else if (app === "paytm") {
-        window.location.href = isAndroid
+        targetUrl = isAndroid
           ? "intent://scan_qr#Intent;scheme=paytmmp;package=net.one97.paytm;end"
           : "paytmmp://scan_qr";
       }
+
+      window.location.href = targetUrl;
     }
 
-    // Auto-initialize on load & url changes
-    window.addEventListener("load", initPage);
+    function copyUpi() {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(upiId).then(function() {
+          const el = document.getElementById("upi-text");
+          if (el) {
+            el.innerText = "Copied!";
+            setTimeout(function() { el.innerText = upiId; }, 2000);
+          }
+        });
+      }
+    }
+
+    window.addEventListener("DOMContentLoaded", initPage);
     window.addEventListener("hashchange", initPage);
     window.addEventListener("popstate", initPage);
   </script>
