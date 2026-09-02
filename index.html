@@ -1,114 +1,114 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Payment Request • CSC Center Jandwala</title>
-  <meta name="description" content="Official Payment Reminder and UPI QR Page for CSC Center Jandwala" />
-  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", sans-serif; }
-    body { background-color: #f8fafc; color: #0f172a; display: flex; justify-content: center; min-height: 100vh; padding: 16px; -webkit-font-smoothing: antialiased; }
-    .container { width: 100%; max-width: 440px; margin: auto; }
-    .badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; background: #d1fae5; color: #065f46; border-radius: 9999px; font-size: 12px; font-weight: 700; margin-bottom: 12px; }
-    .header-card { background: linear-gradient(135deg, #047857 0%, #0f766e 100%); color: #ffffff; border-radius: 20px; padding: 20px; box-shadow: 0 4px 14px rgba(4,120,87,0.2); margin-bottom: 16px; text-align: left; }
-    .shop-title { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
-    .shop-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.2); font-size: 12px; }
-    .card { background: #ffffff; border-radius: 20px; border: 1px solid #e2e8f0; padding: 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); text-align: center; margin-bottom: 16px; }
-    .title-sub { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #64748b; font-weight: 700; }
-    .customer-name { font-size: 24px; font-weight: 800; color: #1e293b; margin-top: 4px; line-height: 1.2; }
-    .amount-box { background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 16px; padding: 16px; margin: 16px 0; }
-    .amount-label { font-size: 12px; color: #065f46; font-weight: 600; }
-    .amount-value { font-size: 38px; font-weight: 900; color: #047857; margin-top: 2px; }
-    .shop-details { background: #f8fafc; border: 1px solid #f1f5f9; border-radius: 12px; padding: 12px 14px; text-align: left; font-size: 12px; margin-top: 14px; }
-    .detail-row { display: flex; justify-content: space-between; padding: 4px 0; }
-    .detail-label { color: #64748b; }
-    .detail-val { font-weight: 700; color: #1e293b; }
-    .btn-pay-now { width: 100%; padding: 16px; background: #059669; color: #ffffff; border: none; border-radius: 14px; font-size: 17px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 12px rgba(5,150,105,0.25); transition: 0.15s; margin-top: 16px; }
-    .btn-pay-now:active { transform: scale(0.98); }
-    .hidden { display: none !important; }
-    .qr-box { background: #ffffff; border: 2px solid #e2e8f0; border-radius: 16px; padding: 12px; display: inline-block; margin: 12px auto; }
-    .btn-app { width: 100%; padding: 12px 14px; background: #ffffff; border: 2px solid #cbd5e1; border-radius: 14px; display: flex; align-items: center; justify-content: space-between; text-decoration: none; color: #0f172a; margin-bottom: 10px; font-size: 14px; font-weight: 700; cursor: pointer; transition: 0.15s; }
-    .btn-app:active { transform: scale(0.98); }
-    .btn-gpay { border-color: #93c5fd; }
-    .btn-phonepe { border-color: #d8b4fe; }
-    .btn-paytm { border-color: #7dd3fc; }
-    .app-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; margin-right: 12px; }
-    .gpay-icon { background: #eff6ff; color: #1d4ed8; }
-    .phonepe-icon { background: #faf5ff; color: #7e22ce; }
-    .paytm-icon { background: #f0f9ff; color: #0284c7; }
-    .btn-tag { font-size: 11px; padding: 4px 8px; border-radius: 6px; background: #f1f5f9; color: #475569; }
-    .alert-pill { background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 14px; padding: 12px; color: #065f46; font-size: 12px; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; }
-    .voice-btn { background: #059669; color: #fff; border: none; padding: 6px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; }
-    .steps-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 16px; text-align: left; font-size: 12px; color: #475569; }
-    .steps-title { font-weight: 800; color: #0f172a; margin-bottom: 8px; font-size: 13px; }
-    .step-item { margin-bottom: 6px; display: flex; gap: 8px; }
-    .step-num { background: #ecfdf5; color: #047857; font-weight: 800; padding: 1px 6px; border-radius: 4px; height: fit-content; }
-    .form-group { text-align: left; margin-bottom: 14px; }
-    .form-label { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; color: #475569; margin-bottom: 6px; }
-    .form-input { width: 100%; padding: 12px 14px; background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 12px; font-size: 14px; font-weight: 600; color: #0f172a; outline: none; }
-    .form-input:focus { background: #fff; border-color: #059669; }
-    .info-box { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 12px; font-size: 11px; color: #1e40af; text-align: left; margin-top: 14px; line-height: 1.5; }
-    .url-chip { background: #ffffff; border: 1px solid #93c5fd; padding: 4px 8px; border-radius: 6px; font-family: monospace; font-size: 11px; color: #1d4ed8; word-break: break-all; display: block; margin-top: 4px; }
-    .sample-badge { display: inline-block; background: #fef3c7; color: #92400e; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 6px; margin-bottom: 8px; }
-    .footer { text-align: center; font-size: 11px; color: #94a3b8; margin-top: 20px; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Test</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px 20px;
+            background: #f2f2f2;
+        }
+
+        .box {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            margin: auto;
+        }
+
+        .amount {
+            font-size: 50px;
+            font-weight: bold;
+            color: green;
+        }
+
+        .name {
+            font-size: 35px;
+            margin: 20px 0;
+        }
+
+        .url {
+            word-break: break-all;
+            background: #eee;
+            padding: 15px;
+            border-radius: 8px;
+        }
+    </style>
 </head>
+
 <body>
-  <div class="container">
-    <div style="text-align: center;">
-      <div class="badge">🛡️ Verified Payment Reminder</div>
-    </div>
 
-    <!-- Shop Banner -->
-    <div class="header-card">
-      <div class="shop-title">CSC Center Jandwala</div>
-      <div class="shop-meta">
-        <div>📞 9781925023</div>
-        <div style="font-family: monospace; background: rgba(0,0,0,0.2); padding: 2px 8px; border-radius: 6px;">UPI: Hxupi@slc</div>
-      </div>
-    </div>
+<div class="box">
 
-    <!-- Customer Payment View (Shown when URL parameters / path exist) -->
-    <div id="customer-view-section">
-      <div class="card">
-        <div id="sample-notice" class="sample-badge hidden">Sample Mode Loaded</div>
-        <div class="title-sub">Official Payment Request</div>
-        <div class="customer-name" id="disp-name">Customer</div>
+    <h1>URL Detection Test</h1>
 
-        <div class="amount-box">
-          <div class="amount-label">Pending Amount</div>
-          <div class="amount-value" id="disp-amount">₹0.00</div>
-        </div>
+    <p>Name detected:</p>
+    <div class="name" id="name">Reading...</div>
 
-        <div class="shop-details">
-          <div class="detail-row">
-            <span class="detail-label">To Payee:</span>
-            <span class="detail-val">CSC Center Jandwala</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Shop Mobile:</span>
-            <span class="detail-val"><a href="tel:9781925023" style="color:#059669; text-decoration:none;">9781925023</a></span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">UPI ID:</span>
-            <span class="detail-val" style="font-family: monospace;">Hxupi@slc</span>
-          </div>
-        </div>
+    <p>Amount detected:</p>
+    <div class="amount" id="amount">Reading...</div>
 
-        <button id="btn-pay" class="btn-pay-now" onclick="handlePayNow()">
-          PAY NOW
-        </button>
-      </div>
+    <p>URL received:</p>
+    <div class="url" id="url"></div>
 
-      <!-- Payment Reveal Area -->
-      <div id="payment-area" class="hidden">
-        <div class="alert-pill">
-          <span>✅ <strong>QR Code Ready!</strong></span>
-          <button class="voice-btn" onclick="playHindiAudio()">🔊 आवाज़ सुनें</button>
-        </div>
+</div>
 
-        <div class="card">
+
+<script>
+
+    // Read everything after #
+    const hash = decodeURIComponent(window.location.hash.substring(1));
+
+    // Example:
+    // #10-Rahul
+    // #100-Rahul_Singh
+    // #1000-Amit
+
+    let amount = "NOT FOUND";
+    let name = "NOT FOUND";
+
+    if (hash) {
+
+        // Split only at the first "-"
+        const separator = hash.indexOf("-");
+
+        if (separator !== -1) {
+
+            amount = hash.substring(0, separator);
+            name = hash.substring(separator + 1);
+
+            // Convert underscores into spaces
+            name = name.replace(/_/g, " ");
+
+        } else {
+
+            // If there is no "-"
+            amount = hash;
+
+        }
+    }
+
+
+    // Show results
+    document.getElementById("name").textContent = name;
+
+    document.getElementById("amount").textContent =
+        amount === "NOT FOUND"
+        ? "NOT FOUND"
+        : "₹" + amount;
+
+    document.getElementById("url").textContent =
+        window.location.href;
+
+</script>
+
+</body>
+</html>        <div class="card">
           <div style="font-size:12px; font-weight:700; color:#475569;">Scan QR Code with any UPI App</div>
           <div class="qr-box">
             <canvas id="qr-canvas" style="width:220px; height:220px; display:block; margin:auto;"></canvas>
