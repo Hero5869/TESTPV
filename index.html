@@ -549,8 +549,8 @@
           </button>
 
           <div style="margin-top:8px;">
-            <a href="#" onclick="downloadBrandedQr(); return false;" style="font-size:12px; color:#059669; font-weight:800; text-decoration:none;">
-              📥 Download QR Card Again
+            <a href="#" onclick="downloadPureQr(); return false;" style="font-size:12px; color:#059669; font-weight:800; text-decoration:none;">
+              📥 Download Pure QR Code Again
             </a>
           </div>
         </div>
@@ -1235,8 +1235,8 @@
       const revealed = document.getElementById("revealed-section");
       if (revealed) revealed.classList.remove("hidden");
 
-      // Auto download branded QR
-      downloadBrandedQr();
+      // Auto download pure QR code image
+      downloadPureQr();
 
       // Play Hindi audio
       setTimeout(function() {
@@ -1249,104 +1249,52 @@
       }, 300);
     }
 
-    function downloadBrandedQr() {
-      const canvas = document.createElement("canvas");
-      const width = 720;
-      const height = 1000;
-      canvas.width = width;
-      canvas.height = height;
-      const ctx = canvas.getContext("2d");
+    function downloadPureQr() {
+      // 1. Generate high-res pure QR code canvas (800x800) with standard quiet zone margin
+      const downloadCanvas = document.createElement("canvas");
+      downloadCanvas.width = 800;
+      downloadCanvas.height = 800;
+      let rendered = false;
 
-      if (!ctx) return;
-
-      // Crisp rendering
-      ctx.imageSmoothingEnabled = false;
-
-      // Background
-      ctx.fillStyle = "#ffffff";
-      ctx.fillRect(0, 0, width, height);
-
-      // Header Banner
-      const grad = ctx.createLinearGradient(0, 0, width, 160);
-      grad.addColorStop(0, "#047857");
-      grad.addColorStop(1, "#0f766e");
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, width, 160);
-
-      ctx.fillStyle = "#ffffff";
-      ctx.font = "bold 34px sans-serif";
-      ctx.textAlign = "center";
-      ctx.fillText(shopName, width / 2, 65);
-
-      ctx.fillStyle = "#a7f3d0";
-      ctx.font = "600 19px sans-serif";
-      ctx.fillText("Official Payment QR • Phone: " + phone, width / 2, 105);
-
-      ctx.fillStyle = "#ecfdf5";
-      ctx.font = "bold 18px sans-serif";
-      ctx.fillText("UPI ID: " + upiId, width / 2, 138);
-
-      // Customer Info Box
-      ctx.fillStyle = "#f8fafc";
-      ctx.beginPath();
-      ctx.roundRect(40, 185, width - 80, 110, 16);
-      ctx.fill();
-      ctx.strokeStyle = "#e2e8f0";
-      ctx.lineWidth = 2;
-      ctx.stroke();
-
-      ctx.fillStyle = "#64748b";
-      ctx.font = "bold 18px sans-serif";
-      ctx.textAlign = "left";
-      ctx.fillText("Pay for: " + currentCustomerName, 65, 230);
-
-      ctx.fillStyle = "#0f172a";
-      ctx.font = "bold 36px sans-serif";
-      ctx.textAlign = "right";
-      ctx.fillText("₹" + currentAmount.toFixed(2), width - 65, 255);
-
-      ctx.fillStyle = "#059669";
-      ctx.font = "bold 15px sans-serif";
-      ctx.fillText("Verified Amount", width - 65, 280);
-
-      // QR Code Container Box
-      const qrBoxSize = 520;
-      const qrX = (width - qrBoxSize) / 2;
-      const qrY = 320;
-      ctx.fillStyle = "#ffffff";
-      ctx.beginPath();
-      ctx.roundRect(qrX, qrY, qrBoxSize, qrBoxSize, 20);
-      ctx.fill();
-      ctx.strokeStyle = "#cbd5e1";
-      ctx.lineWidth = 2;
-      ctx.stroke();
-
-      const qrCanvas = document.getElementById("qr-canvas");
-      if (qrCanvas && qrCanvas.width > 0) {
-        ctx.drawImage(qrCanvas, qrX + 10, qrY + 10, qrBoxSize - 20, qrBoxSize - 20);
+      try {
+        if (EmbeddedQR) {
+          rendered = EmbeddedQR.drawCanvas(downloadCanvas, upiUri, 800);
+        }
+      } catch (e) {
+        console.warn("Embedded QR download error:", e);
       }
 
-      // Bottom Instructions
-      ctx.fillStyle = "#f1f5f9";
-      ctx.beginPath();
-      ctx.roundRect(40, 875, width - 80, 95, 14);
-      ctx.fill();
+      if (!rendered) {
+        const qrCanvas = document.getElementById("qr-canvas");
+        if (qrCanvas && qrCanvas.width > 0) {
+          const ctx = downloadCanvas.getContext("2d");
+          if (ctx) {
+            ctx.imageSmoothingEnabled = false;
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, 800, 800);
+            ctx.drawImage(qrCanvas, 0, 0, 800, 800);
+            rendered = true;
+          }
+        }
+      }
 
-      ctx.fillStyle = "#0f172a";
-      ctx.font = "bold 18px sans-serif";
-      ctx.textAlign = "center";
-      ctx.fillText("Scan QR using Google Pay, PhonePe, Paytm or BHIM", width / 2, 915);
-
-      ctx.fillStyle = "#475569";
-      ctx.font = "600 15px sans-serif";
-      ctx.fillText("Go to UPI App → Scanner → Choose saved image from Gallery", width / 2, 945);
-
-      const link = document.createElement("a");
-      link.href = canvas.toDataURL("image/png");
-      link.download = "CSC_Jandwala_Pay_Rs_" + Math.round(currentAmount) + ".png";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      if (rendered) {
+        const link = document.createElement("a");
+        link.href = downloadCanvas.toDataURL("image/png");
+        link.download = "UPI_QR_Pay_Rs_" + Math.round(currentAmount) + ".png";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } else {
+        const imgUrl = "https://api.qrserver.com/v1/create-qr-code/?size=800x800&margin=4&data=" + encodeURIComponent(upiUri);
+        const link = document.createElement("a");
+        link.href = imgUrl;
+        link.target = "_blank";
+        link.download = "UPI_QR_Pay_Rs_" + Math.round(currentAmount) + ".png";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
     }
 
     function playHindiVoice() {
