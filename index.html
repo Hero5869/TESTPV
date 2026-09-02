@@ -208,30 +208,6 @@
       transform: scale(0.98);
     }
 
-    .btn-direct-pay {
-      background: linear-gradient(135deg, #059669 0%, #0f766e 100%);
-      color: #ffffff;
-      border: none;
-      border-radius: 12px;
-      padding: 14px;
-      font-size: 14px;
-      font-weight: 800;
-      width: 100%;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(5,150,105,0.25);
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      box-sizing: border-box;
-      margin-bottom: 12px;
-    }
-
-    .btn-direct-pay:active {
-      transform: scale(0.98);
-    }
-
     /* Voice guidance */
     .voice-bar {
       background: #064e3b;
@@ -507,12 +483,8 @@
 
         <!-- App Launchers -->
         <div class="app-buttons">
-          <a href="#" id="direct-upi-link" class="btn-direct-pay">
-            ⚡ 1-Tap Pay via Any UPI App (Mobile)
-          </a>
-
-          <div style="font-size:11px; font-weight:800; color:#64748b; text-transform:uppercase; text-align:left; margin-top:2px;">
-            Or Open Scanner in your UPI App:
+          <div style="font-size:11px; font-weight:800; color:#64748b; text-transform:uppercase; text-align:left; margin-bottom:4px;">
+            Open Scanner in your UPI App:
           </div>
 
           <button type="button" class="btn-app btn-gpay" onclick="openApp('gpay')">
@@ -1169,19 +1141,14 @@
         el.innerText = currentAmount.toFixed(0);
       });
 
-      const note = ("Payment by " + currentCustomerName).replace(/[^a-zA-Z0-9 ]/g, " ").trim().slice(0, 40);
-      const cleanShop = shopName.replace(/[^a-zA-Z0-9 ]/g, " ").trim();
+      const note = ("Payment by " + currentCustomerName).trim().slice(0, 50);
+      const cleanShop = shopName.trim();
 
       upiUri = "upi://pay?pa=" + encodeURIComponent(upiId.trim()) +
                "&pn=" + encodeURIComponent(cleanShop) +
                "&am=" + amountStr +
                "&cu=INR" +
                "&tn=" + encodeURIComponent(note);
-
-      const directLink = document.getElementById("direct-upi-link");
-      if (directLink) {
-        directLink.href = upiUri;
-      }
 
       renderQr();
     }
