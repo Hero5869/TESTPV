@@ -122,6 +122,88 @@
       margin-top: 2px;
     }
 
+    /* Bill Overview Table */
+    .bill-table {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+      text-align: left;
+      font-size: 12px;
+    }
+
+    .bill-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      color: #475569;
+    }
+
+    .bill-row:last-child {
+      margin-bottom: 0;
+      padding-top: 6px;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    .bill-val {
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .verified-tag {
+      color: #047857;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Big PAY NOW button */
+    .btn-pay-now {
+      width: 100%;
+      padding: 16px 20px;
+      background: linear-gradient(135deg, #059669 0%, #0d9488 100%);
+      color: #ffffff;
+      border: none;
+      border-radius: 16px;
+      font-size: 16px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: transform 0.1s ease, box-shadow 0.15s ease;
+    }
+
+    .btn-pay-now:active {
+      transform: scale(0.98);
+    }
+
+    .btn-subtext {
+      font-size: 11px;
+      color: #64748b;
+      margin-top: 8px;
+    }
+
+    /* Success Banner */
+    .success-banner {
+      background: #d1fae5;
+      border: 1px solid #6ee7b7;
+      color: #065f46;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 10px 12px;
+      border-radius: 12px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
     /* Voice Button */
     .btn-voice {
       width: 100%;
@@ -359,74 +441,110 @@
 
         <!-- Amount -->
         <div class="amount-box">
-          <div class="amount-label">Total Amount (कुल राशि)</div>
+          <div class="amount-label">Total Due Amount (कुल राशि)</div>
           <div class="amount-val" id="disp-amount">₹1000</div>
         </div>
 
-        <!-- Voice Guide Button -->
-        <button type="button" class="btn-voice" id="btn-voice" onclick="toggleAudio()">
-          <span id="voice-icon">🔊</span>
-          <span id="voice-text">हिन्दी वॉइस निर्देश सुनें (Play Audio Guide)</span>
-        </button>
-
-        <!-- Prominent QR Code -->
-        <div class="qr-container">
-          <div class="qr-frame">
-            <canvas id="qr-canvas"></canvas>
-            <img id="qr-fallback-img" alt="Payment QR Code" />
+        <!-- Bill Overview Table -->
+        <div class="bill-table">
+          <div class="bill-row">
+            <span>Payee Name:</span>
+            <span class="bill-val">CSC Center Jandwala</span>
           </div>
-          <div class="qr-footer">
-            <span style="font-weight:800; color:#0f172a;" id="qr-sub-amt">Pay ₹1000</span>
-            <button type="button" class="btn-save-qr" id="btn-save-qr" onclick="downloadPureQr()">
-              📥 Save QR
+          <div class="bill-row">
+            <span>UPI ID:</span>
+            <span class="bill-val" style="font-family:monospace;">Hxupi@slc</span>
+          </div>
+          <div class="bill-row">
+            <span>Merchant Status:</span>
+            <span class="verified-tag">✓ 100% Verified Merchant</span>
+          </div>
+        </div>
+
+        <!-- STAGE 1: Pay Now Button -->
+        <div id="stage-init" style="display: block;">
+          <button type="button" class="btn-pay-now" onclick="onPayNowClick()">
+            <span>💳</span>
+            <span id="btn-pay-text">PAY NOW ₹1000 (भुगतान करें)</span>
+          </button>
+          <div class="btn-subtext">
+            Tap to generate QR, start voice instructions & auto-save QR to gallery
+          </div>
+        </div>
+
+        <!-- STAGE 2: Revealed QR Code, Voice Controls & 1-Tap UPI Apps -->
+        <div id="stage-active" style="display: none;">
+          <!-- Success Auto-Saved Banner -->
+          <div class="success-banner" id="banner-saved">
+            <span>✅</span>
+            <span>QR Code saved to gallery! Audio guide playing.</span>
+          </div>
+
+          <!-- Voice Guide Button -->
+          <button type="button" class="btn-voice" id="btn-voice" onclick="toggleAudio()">
+            <span id="voice-icon">🔊</span>
+            <span id="voice-text">हिन्दी वॉइस निर्देश सुनें (Replay Audio)</span>
+          </button>
+
+          <!-- Prominent QR Code -->
+          <div class="qr-container">
+            <div class="qr-frame">
+              <canvas id="qr-canvas"></canvas>
+              <img id="qr-fallback-img" alt="Payment QR Code" />
+            </div>
+            <div class="qr-footer">
+              <span style="font-weight:800; color:#0f172a;" id="qr-sub-amt">Pay ₹1000</span>
+              <button type="button" class="btn-save-qr" id="btn-save-qr" onclick="downloadPureQr()">
+                📥 Save QR
+              </button>
+            </div>
+          </div>
+
+          <!-- 1-Tap UPI App Launchers -->
+          <div>
+            <div class="apps-title">Or Tap to Open UPI App:</div>
+            <div class="apps-grid">
+              <div class="btn-app btn-app-gpay" onclick="openApp('gpay')">
+                <div class="app-icon icon-gpay">G</div>
+                <div class="app-name">GPay</div>
+              </div>
+              <div class="btn-app btn-app-phonepe" onclick="openApp('phonepe')">
+                <div class="app-icon icon-phonepe">पे</div>
+                <div class="app-name">PhonePe</div>
+              </div>
+              <div class="btn-app btn-app-paytm" onclick="openApp('paytm')">
+                <div class="app-icon icon-paytm">Paytm</div>
+                <div class="app-name">Paytm</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Shop UPI Details -->
+          <div class="upi-pill">
+            <div>
+              <div style="font-size:10px; color:#64748b; font-weight:700;">SHOP UPI ID</div>
+              <div style="font-family:monospace; font-weight:800; color:#0f172a;">Hxupi@slc</div>
+            </div>
+            <button type="button" class="btn-copy" id="btn-copy-upi" onclick="copyUpi()">
+              Copy
             </button>
           </div>
-        </div>
 
-        <!-- 1-Tap UPI App Launchers -->
-        <div>
-          <div class="apps-title">Tap to Open App:</div>
-          <div class="apps-grid">
-            <div class="btn-app btn-app-gpay" onclick="openApp('gpay')">
-              <div class="app-icon icon-gpay">G</div>
-              <div class="app-name">GPay</div>
+          <!-- Quick Steps -->
+          <div class="guide-box">
+            <div class="guide-title">भुगतान का सबसे आसान तरीका (How to Pay):</div>
+            <div class="guide-step">
+              <span class="step-num">1</span>
+              <span><strong>QR Code गैलरी में सेव</strong> हो चुका है (या ऊपर <strong>Save QR</strong> दबाएं)।</span>
             </div>
-            <div class="btn-app btn-app-phonepe" onclick="openApp('phonepe')">
-              <div class="app-icon icon-phonepe">पे</div>
-              <div class="app-name">PhonePe</div>
+            <div class="guide-step">
+              <span class="step-num">2</span>
+              <span>अपना <strong>GPay / PhonePe / Paytm</strong> खोलें और <strong>स्कैनर में Gallery</strong> ऑप्शन चुनें।</span>
             </div>
-            <div class="btn-app btn-app-paytm" onclick="openApp('paytm')">
-              <div class="app-icon icon-paytm">Paytm</div>
-              <div class="app-name">Paytm</div>
+            <div class="guide-step">
+              <span class="step-num">3</span>
+              <span>डाउनलोड किया गया <strong>QR कोड सिलेक्ट करें</strong> — बिल राशि अपने आप भर जाएगी!</span>
             </div>
-          </div>
-        </div>
-
-        <!-- Shop UPI Details -->
-        <div class="upi-pill">
-          <div>
-            <div style="font-size:10px; color:#64748b; font-weight:700;">SHOP UPI ID</div>
-            <div style="font-family:monospace; font-weight:800; color:#0f172a;">Hxupi@slc</div>
-          </div>
-          <button type="button" class="btn-copy" id="btn-copy-upi" onclick="copyUpi()">
-            Copy
-          </button>
-        </div>
-
-        <!-- Quick Steps -->
-        <div class="guide-box">
-          <div class="guide-title">भुगतान के आसान तरीके:</div>
-          <div class="guide-step">
-            <span class="step-num">1</span>
-            <span>दूसरे फोन से ऊपर दिया गया QR Code सीधे स्कैन करें।</span>
-          </div>
-          <div class="guide-step">
-            <span class="step-num">2</span>
-            <span>या <strong>Save QR</strong> करके UPI ऐप की गैलरी से स्कैन करें।</span>
-          </div>
-          <div class="guide-step">
-            <span class="step-num">3</span>
-            <span>या ऊपर <strong>GPay / PhonePe / Paytm</strong> पर टैप करें।</span>
           </div>
         </div>
       </div>
@@ -534,6 +652,7 @@
       document.getElementById("disp-name").innerText = currentCustomerName;
       document.getElementById("disp-amount").innerText = "₹" + formattedAmount;
       document.getElementById("qr-sub-amt").innerText = "Pay ₹" + formattedAmount;
+      document.getElementById("btn-pay-text").innerText = "PAY NOW ₹" + formattedAmount + " (भुगतान करें)";
 
       const note = ("Payment by " + currentCustomerName).trim().slice(0, 50);
 
@@ -544,6 +663,18 @@
                "&tn=" + encodeURIComponent(note);
 
       renderQr();
+    }
+
+    function onPayNowClick() {
+      // 1. Hide Stage 1, Reveal Stage 2
+      document.getElementById("stage-init").style.display = "none";
+      document.getElementById("stage-active").style.display = "block";
+
+      // 2. Play Hindi voice assistance immediately
+      playHindiVoice();
+
+      // 3. Auto-download pure QR image to phone gallery
+      downloadPureQr();
     }
 
     function renderQr() {
@@ -640,7 +771,7 @@
       window.speechSynthesis.cancel();
 
       const roundedAmount = Math.round(currentAmount);
-      const text = "नमस्ते " + currentCustomerName + " जी। सीएससी सेंटर जंडवाला का कुल बिल " + roundedAmount + " रुपये है। स्क्रीन पर दिया गया क्यूआर कोड स्कैन करें या नीचे दिए गए ऐप बटन से भुगतान करें। धन्यवाद।";
+      const text = "नमस्ते " + currentCustomerName + " जी। सीएससी सेंटर जंडवाला का कुल बिल " + roundedAmount + " रुपये है। आपका पेमेंट क्यूआर कोड फोन की गैलरी में सेव हो गया है। अपना गूगल पे, फोनपे या पेटीएम ऐप खोलें, स्कैनर में जाकर गैलरी ऑप्शन चुनें और डाउनलोड किया गया क्यूआर कोड सिलेक्ट करें। बिल राशि अपने आप भर जाएगी, फिर अपना यूपीआई पिन डालकर भुगतान पूरा करें। धन्यवाद।";
 
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = "hi-IN";
@@ -688,7 +819,7 @@
         } else {
           btn.classList.remove("active");
           icon.innerText = "🔊";
-          text.innerText = "हिन्दी वॉइस निर्देश सुनें (Play Audio Guide)";
+          text.innerText = "हिन्दी वॉइस निर्देश सुनें (Replay Audio)";
         }
       }
     }
