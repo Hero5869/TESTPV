@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Payment Request • CSC Center Jandwala</title>
+  <meta name="description" content="Official Payment Reminder and UPI QR Page for CSC Center Jandwala" />
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", sans-serif; }
+    body { background-color: #f8fafc; color: #0f172a; display: flex; justify-content: center; min-height: 100vh; padding: 16px; -webkit-font-smoothing: antialiased; }
+    .container { width: 100%; max-width: 440px; margin: auto; }
+    .badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; background: #d1fae5; color: #065f46; border-radius: 9999px; font-size: 12px; font-weight: 700; margin-bottom: 12px; }
+    .header-card { background: linear-gradient(135deg, #047857 0%, #0f766e 100%); color: #ffffff; border-radius: 20px; padding: 20px; box-shadow: 0 4px 14px rgba(4,120,87,0.2); margin-bottom: 16px; text-align: left; }
+    .shop-title { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
+    .shop-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.2); font-size: 12px; }
+    .card { background: #ffffff; border-radius: 20px; border: 1px solid #e2e8f0; padding: 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); text-align: center; margin-bottom: 16px; }
+    .title-sub { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #64748b; font-weight: 700; }
+    .customer-name { font-size: 24px; font-weight: 800; color: #1e293b; margin-top: 4px; line-height: 1.2; }
+    .amount-box { background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 16px; padding: 16px; margin: 16px 0; }
+    .amount-label { font-size: 12px; color: #065f46; font-weight: 600; }
+    .amount-value { font-size: 38px; font-weight: 900; color: #047857; margin-top: 2px; }
+    .shop-details { background: #f8fafc; border: 1px solid #f1f5f9; border-radius: 12px; padding: 12px 14px; text-align: left; font-size: 12px; margin-top: 14px; }
+    .detail-row { display: flex; justify-content: space-between; padding: 4px 0; }
+    .detail-label { color: #64748b; }
+    .detail-val { font-weight: 700; color: #1e293b; }
+    .btn-pay-now { width: 100%; padding: 16px; background: #059669; color: #ffffff; border: none; border-radius: 14px; font-size: 17px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 12px rgba(5,150,105,0.25); transition: 0.15s; margin-top: 16px; }
+    .btn-pay-now:active { transform: scale(0.98); }
+    .hidden { display: none !important; }
+    .qr-box { background: #ffffff; border: 2px solid #e2e8f0; border-radius: 16px; padding: 12px; display: inline-block; margin: 12px auto; }
+    .btn-app { width: 100%; padding: 12px 14px; background: #ffffff; border: 2px solid #cbd5e1; border-radius: 14px; display: flex; align-items: center; justify-content: space-between; text-decoration: none; color: #0f172a; margin-bottom: 10px; font-size: 14px; font-weight: 700; cursor: pointer; transition: 0.15s; }
+    .btn-app:active { transform: scale(0.98); }
+    .btn-gpay { border-color: #93c5fd; }
+    .btn-phonepe { border-color: #d8b4fe; }
+    .btn-paytm { border-color: #7dd3fc; }
+    .app-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; margin-right: 12px; }
+    .gpay-icon { background: #eff6ff; color: #1d4ed8; }
+    .phonepe-icon { background: #faf5ff; color: #7e22ce; }
+    .paytm-icon { background: #f0f9ff; color: #0284c7; }
+    .btn-tag { font-size: 11px; padding: 4px 8px; border-radius: 6px; background: #f1f5f9; color: #475569; }
+    .alert-pill { background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 14px; padding: 12px; color: #065f46; font-size: 12px; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; }
+    .voice-btn { background: #059669; color: #fff; border: none; padding: 6px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; }
+    .steps-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 16px; text-align: left; font-size: 12px; color: #475569; }
+    .steps-title { font-weight: 800; color: #0f172a; margin-bottom: 8px; font-size: 13px; }
+    .step-item { margin-bottom: 6px; display: flex; gap: 8px; }
+    .step-num { background: #ecfdf5; color: #047857; font-weight: 800; padding: 1px 6px; border-radius: 4px; height: fit-content; }
+    .form-group { text-align: left; margin-bottom: 14px; }
+    .form-label { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; color: #475569; margin-bottom: 6px; }
+    .form-input { width: 100%; padding: 12px 14px; background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 12px; font-size: 14px; font-weight: 600; color: #0f172a; outline: none; }
+    .form-input:focus { background: #fff; border-color: #059669; }
+    .info-box { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 12px; font-size: 11px; color: #1e40af; text-align: left; margin-top: 14px; line-height: 1.5; }
+    .url-chip { background: #ffffff; border: 1px solid #93c5fd; padding: 4px 8px; border-radius: 6px; font-family: monospace; font-size: 11px; color: #1d4ed8; word-break: break-all; display: block; margin-top: 4px; }
+    .sample-badge { display: inline-block; background: #fef3c7; color: #92400e; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 6px; margin-bottom: 8px; }
+    .footer { text-align: center; font-size: 11px; color: #94a3b8; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div style="text-align: center;">
+      <div class="badge">🛡️ Verified Payment Reminder</div>
+    </div>
+
+    <!-- Shop Banner -->
+    <div class="header-card">
+      <div class="shop-title">CSC Center Jandwala</div>
+      <div class="shop-meta">
+        <div>📞 9781925023</div>
+        <div style="font-family: monospace; background: rgba(0,0,0,0.2); padding: 2px 8px; border-radius: 6px;">UPI: Hxupi@slc</div>
+      </div>
+    </div>
+
+    <!-- Customer Payment View (Shown when URL parameters / path exist) -->
+    <div id="customer-view-section">
+      <div class="card">
+        <div id="sample-notice" class="sample-badge hidden">Sample Mode Loaded</div>
+        <div class="title-sub">Official Payment Request</div>
+        <div class="customer-name" id="disp-name">Customer</div>
+
+        <div class="amount-box">
+          <div class="amount-label">Pending Amount</div>
+          <div class="amount-value" id="disp-amount">₹0.00</div>
+        </div>
+
+        <div class="shop-details">
+          <div class="detail-row">
+            <span class="detail-label">To Payee:</span>
+            <span class="detail-val">CSC Center Jandwala</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Shop Mobile:</span>
+            <span class="detail-val"><a href="tel:9781925023" style="color:#059669; text-decoration:none;">9781925023</a></span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">UPI ID:</span>
+            <span class="detail-val" style="font-family: monospace;">Hxupi@slc</span>
+          </div>
+        </div>
+
+        <button id="btn-pay" class="btn-pay-now" onclick="handlePayNow()">
+          PAY NOW
+        </button>
+      </div>
+
+      <!-- Payment Reveal Area -->
+      <div id="payment-area" class="hidden">
+        <div class="alert-pill">
+          <span>✅ <strong>QR Code Ready!</strong></span>
+          <button class="voice-btn" onclick="playHindiAudio()">🔊 आवाज़ सुनें</button>
+        </div>
+
+        <div class="card">
+          <div style="font-size:12px; font-weight:700; color:#475569;">Scan QR Code with any UPI App</div>
+          <div class="qr-box">
+            <canvas id="qr-canvas" style="width:220px; height:220px; display:block; margin:auto;"></canvas>
+            <div style="font-size:12px; font-weight:800; margin-top:6px;" id="qr-amt-label">Pay ₹0.00</div>
+          </div>
+
+          <div style="font-size:11px; font-weight:700; text-transform:uppercase; color:#64748b; margin:12px 0 8px;">Select App to Open:</div>
+
+          <button class="btn-app btn-gpay" onclick="openApp('gpay')">
+            <div style="display:flex; align-items:center;">
+              <div class="app-icon gpay-icon">G</div>
+              <div style="text-align:left;">
+                <div>Google Pay</div>
+                <div style="font-size:10px; color:#64748b; font-weight:normal;">Open Scanner</div>
+              </div>
+            </div>
+            <span class="btn-tag" style="color:#1d4ed8; background:#eff6ff;">Open App →</span>
+          </button>
+
+          <button class="btn-app btn-phonepe" onclick="openApp('phonepe')">
+            <div style="display:flex; align-items:center;">
+              <div class="app-icon phonepe-icon">पे</div>
+              <div style="text-align:left;">
+                <div>PhonePe</div>
+                <div style="font-size:10px; color:#64748b; font-weight:normal;">Open Scanner</div>
+              </div>
+            </div>
+            <span class="btn-tag" style="color:#7e22ce; background:#faf5ff;">Open App →</span>
+          </button>
+
+          <button class="btn-app btn-paytm" onclick="openApp('paytm')">
+            <div style="display:flex; align-items:center;">
+              <div class="app-icon paytm-icon">Paytm</div>
+              <div style="text-align:left;">
+                <div>Paytm</div>
+                <div style="font-size:10px; color:#64748b; font-weight:normal;">Open Scanner</div>
+              </div>
+            </div>
+            <span class="btn-tag" style="color:#0284c7; background:#f0f9ff;">Open App →</span>
+          </button>
+
+          <div style="margin-top:10px;">
+            <a href="#" onclick="downloadBrandedQr(); return false;" style="font-size:11px; color:#059669; font-weight:700; text-decoration:none;">
+              📥 QR कोड फिर से डाउनलोड करें
+            </a>
+          </div>
+        </div>
+
+        <div class="steps-card">
+          <div class="steps-title">आसान भुगतान प्रक्रिया (3 Simple Steps):</div>
+          <div class="step-item">
+            <span class="step-num">1</span>
+            <span>ऊपर दिए गए बटन से अपना <strong>Google Pay, PhonePe या Paytm</strong> खोलें।</span>
+          </div>
+          <div class="step-item">
+            <span class="step-num">2</span>
+            <span>ऐप में <strong>Scanner</strong> खोलें और <strong>Gallery</strong> से डाउनलोड किया हुआ QR कोड चुनें।</span>
+          </div>
+          <div class="step-item">
+            <span class="step-num">3</span>
+            <span>राशि <strong>₹<span class="step-amt">0</span></strong> आ जाएगी। UPI PIN डालकर भुगतान पूरा करें।</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Operator Form (Shown if URL has no parameters) -->
+    <div id="quick-creator-section" class="hidden">
+      <div class="card">
+        <h2 style="font-size: 16px; font-weight: 800; color: #1e293b; margin-bottom: 4px;">Quick Payment Link Generator</h2>
+        <p style="font-size: 12px; color: #64748b; margin-bottom: 16px;">Create a direct payment link on your domain</p>
+
+        <div class="form-group">
+          <label class="form-label">Customer Name</label>
+          <input type="text" id="manual-name" class="form-input" placeholder="e.g. Rahul Singh" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Amount (₹)</label>
+          <input type="number" id="manual-amount" class="form-input" placeholder="e.g. 100" />
+        </div>
+
+        <button type="button" class="btn-pay-now" onclick="applyManualData()">
+          Generate & Preview Payment Link
+        </button>
+
+        <div class="info-box">
+          <strong>GitHub Pages URL Format:</strong><br />
+          You can share clean direct URLs with customers:
+          <span class="url-chip" id="url-example-chip">https://yourdomain.com/#100-Rahul_singh</span>
+          The page will automatically parse the amount and name from the URL!
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div>CSC Center Jandwala • Jandwala</div>
+      <div style="margin-top:4px;">धन्यवाद 🙏</div>
+    </div>
+  </div>
+
+  <script>
+    const upiId = "Hxupi@slc";
+    const shopName = "CSC Center Jandwala";
+    const phone = "9781925023";
+    const defaultFallbackName = "Rahul Singh";
+    const defaultFallbackAmount = 100;
+
+    let currentCustomerName = "Customer";
+    let currentAmount = 0;
+    let upiUri = "";
+
+    /**
+     * Automatic URL detector and extractor:
+     * Handles:
+     * 1. domain.com/100-Rahul_singh
+     * 2. domain.com/#100-Rahul_singh or #/100-Rahul_singh
+     * 3. domain.github.io/repo/100-Rahul_singh
+     * 4. domain.com/?100-Rahul_singh
+     * 5. domain.com/?a=100&n=Rahul_singh or ?amount=100&name=Rahul_singh
+     */
+    function parseDetailsFromUrl() {
+      let name = '';
+      let amount = 0;
+
+      // 1. Standard search query parameters
+      const params = new URLSearchParams(window.location.search);
+      if (params.has('a') || params.has('amount')) {
+        amount = parseFloat(params.get('a') || params.get('amount') || '0') || 0;
+      }
+      if (params.has('n') || params.has('name')) {
+        name = params.get('n') || params.get('name') || '';
+      }
+
+      // 2. If not found in standard params, check Hash & Path
+      if (!amount || !name) {
+        const candidates = [
+          window.location.hash.replace(/^#/?/, ''),
+          decodeURIComponent(window.location.pathname),
+          window.location.search.replace(/^\?/, '')
+        ];
+
+        for (const raw of candidates) {
+          if (!raw) continue;
+          // Split path or hash segments
+          const segments = raw.split(/[\/\?#&]/).filter(Boolean);
+          for (const seg of segments) {
+            // Pattern 1: 100-Rahul_singh, 100.50-Rahul_singh, 100_Rahul_singh
+            const match1 = seg.match(/^(\d+(?:\.\d+)?)[-_](.+)$/);
+            if (match1) {
+              if (!amount) amount = parseFloat(match1[1]) || 0;
+              if (!name) name = match1[2];
+              break;
+            }
+
+            // Pattern 2: Rahul_singh-100
+            const match2 = seg.match(/^(.+)[-_](\d+(?:\.\d+)?)$/);
+            if (match2 && isNaN(Number(match2[1]))) {
+              if (!amount) amount = parseFloat(match2[2]) || 0;
+              if (!name) name = match2[1];
+              break;
+            }
+          }
+          if (amount && name) break;
+        }
+      }
+
+      // Format customer name cleanly
+      if (name) {
+        name = decodeURIComponent(name)
+          .replace(/[_+]/g, ' ')
+          .replace(/[-]/g, ' ')
+          .trim();
+        // Capitalize words
+        name = name.replace(/\b\w/g, char => char.toUpperCase());
+      }
+
+      return { name, amount };
+    }
+
+    function initPage() {
+      const parsed = parseDetailsFromUrl();
+      const customerSection = document.getElementById('customer-view-section');
+      const creatorSection = document.getElementById('quick-creator-section');
+      const sampleNotice = document.getElementById('sample-notice');
+
+      if (parsed.amount > 0 || parsed.name) {
+        currentCustomerName = parsed.name || "Customer";
+        currentAmount = parsed.amount || 0;
+        if (sampleNotice) sampleNotice.classList.add('hidden');
+        customerSection.classList.remove('hidden');
+        creatorSection.classList.add('hidden');
+        renderCustomerView();
+      } else if (defaultFallbackName && defaultFallbackAmount > 0) {
+        // Pre-configured sample fallback data
+        currentCustomerName = defaultFallbackName;
+        currentAmount = defaultFallbackAmount;
+        if (sampleNotice) sampleNotice.classList.remove('hidden');
+        customerSection.classList.remove('hidden');
+        creatorSection.classList.add('hidden');
+        renderCustomerView();
+      } else {
+        // No parameters in URL: show quick creator
+        customerSection.classList.add('hidden');
+        creatorSection.classList.remove('hidden');
+        
+        // Show current host in example
+        const currentOrigin = window.location.origin + window.location.pathname.replace(/\/[^/]*$/, '');
+        const exampleChip = document.getElementById('url-example-chip');
+        if (exampleChip) {
+          exampleChip.innerText = currentOrigin + '/#100-Rahul_singh';
+        }
+      }
+    }
+
+    function renderCustomerView() {
+      const amountStr = currentAmount.toFixed(2);
+      document.title = 'Pay ₹' + currentAmount + ' • ' + currentCustomerName + ' • ' + shopName;
+      document.getElementById('disp-name').innerText = 'Hello ' + currentCustomerName + ' 👋';
+      document.getElementById('disp-amount').innerText = '₹' + amountStr;
+      document.getElementById('btn-pay').innerText = 'PAY NOW ₹' + amountStr;
+      document.getElementById('qr-amt-label').innerText = 'Pay ₹' + amountStr;
+      document.querySelectorAll('.step-amt').forEach(el => el.innerText = currentAmount.toFixed(0));
+
+      const note = 'Payment by ' + currentCustomerName;
+      upiUri = 'upi://pay?pa=' + encodeURIComponent(upiId) +
+               '&pn=' + encodeURIComponent(shopName) +
+               '&am=' + amountStr +
+               '&cu=INR' +
+               '&tn=' + encodeURIComponent(note);
+
+      renderQr();
+    }
+
+    function applyManualData() {
+      const nameInput = document.getElementById('manual-name').value.trim();
+      const amtInput = parseFloat(document.getElementById('manual-amount').value) || 0;
+
+      if (!nameInput || amtInput <= 0) {
+        alert('Please enter both customer name and a valid amount.');
+        return;
+      }
+
+      // Update hash in URL
+      const cleanNameSlug = nameInput.replace(/\s+/g, '_');
+      window.location.hash = '#' + amtInput + '-' + cleanNameSlug;
+    }
+
+    function renderQr() {
+      const canvas = document.getElementById('qr-canvas');
+      if (window.QRCode && canvas && upiUri) {
+        QRCode.toCanvas(canvas, upiUri, { width: 220, margin: 1, errorCorrectionLevel: 'H' });
+      }
+    }
+
+    function playHindiAudio() {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const text = "नमस्ते " + currentCustomerName + " जी। कृपया अपना कोई भी यूपीआई ऐप जैसे गूगल पे, फोनपे या पेटीएम खोलें। स्कैनर में जाकर गैलरी से अभी डाउनलोड किया गया क्यूआर कोड चुनें और " + Math.round(currentAmount) + " रुपये का भुगतान करें। धन्यवाद।";
+        const msg = new SpeechSynthesisUtterance(text);
+        msg.lang = 'hi-IN';
+        msg.rate = 0.9;
+        window.speechSynthesis.speak(msg);
+      }
+    }
+
+    function downloadBrandedQr() {
+      const qrCanvas = document.getElementById('qr-canvas');
+      const canvas = document.createElement('canvas');
+      canvas.width = 600;
+      canvas.height = 750;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, 600, 750);
+
+      ctx.fillStyle = '#047857';
+      ctx.fillRect(0, 0, 600, 130);
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 26px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(shopName, 300, 55);
+      ctx.font = '16px sans-serif';
+      ctx.fillText('Official Payment QR • UPI: ' + upiId, 300, 95);
+
+      ctx.fillStyle = '#1e293b';
+      ctx.font = 'bold 20px sans-serif';
+      ctx.fillText('Pay for: ' + currentCustomerName + ' | Amount: ₹' + currentAmount.toFixed(2), 300, 180);
+
+      if (qrCanvas) {
+        ctx.drawImage(qrCanvas, 150, 220, 300, 300);
+      }
+
+      ctx.fillStyle = '#64748b';
+      ctx.font = '14px sans-serif';
+      ctx.fillText('Open Google Pay / PhonePe / Paytm → Scanner → Choose from Gallery', 300, 580);
+
+      const link = document.createElement('a');
+      link.href = canvas.toDataURL('image/png');
+      link.download = 'CSC_Jandwala_Pay_Rs_' + Math.round(currentAmount) + '.png';
+      link.click();
+    }
+
+    function handlePayNow() {
+      document.getElementById('btn-pay').style.display = 'none';
+      document.getElementById('payment-area').classList.remove('hidden');
+      renderQr();
+      setTimeout(downloadBrandedQr, 100);
+      setTimeout(playHindiAudio, 200);
+    }
+
+    function openApp(app) {
+      const isAndroid = /android/i.test(navigator.userAgent);
+      if (app === 'gpay') {
+        window.location.href = isAndroid ? 'intent://upi/scan#Intent;scheme=gpay;package=com.google.android.apps.nbu.paisa.user;end' : 'gpay://upi/scan';
+      } else if (app === 'phonepe') {
+        window.location.href = isAndroid ? 'intent://scan#Intent;scheme=phonepe;package=com.phonepe.app;end' : 'phonepe://scan';
+      } else if (app === 'paytm') {
+        window.location.href = isAndroid ? 'intent://scan_qr#Intent;scheme=paytmmp;package=net.one97.paytm;end' : 'paytmmp://scan_qr';
+      }
+    }
+
+    window.addEventListener('load', initPage);
+    window.addEventListener('hashchange', initPage);
+    window.addEventListener('popstate', initPage);
+  </script>
+</body>
+</html>
