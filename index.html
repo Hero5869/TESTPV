@@ -743,6 +743,8 @@
     let currentCustomerName = '';
     let currentUpiUri = '';
     let isSpeaking = false;
+    let hasAutoDownloaded = false;
+    let hasAutoPlayedAudio = false;
 
     const DICT = {
       en: {
@@ -950,11 +952,38 @@
           errorCorrectionLevel: "M",
           color: { dark: "#0f172a", light: "#ffffff" }
         }, function(err) {
-          if (err) console.error("QR render error:", err);
+          if (err) {
+            console.error("QR render error:", err);
+          } else {
+            // Automatically download QR code when open
+            if (!hasAutoDownloaded) {
+              hasAutoDownloaded = true;
+              setTimeout(saveQrToGallery, 500);
+            }
+          }
         });
       }
 
       setLanguage("en");
+
+      // Automatically play audio guide when open
+      if (!hasAutoPlayedAudio) {
+        hasAutoPlayedAudio = true;
+        setTimeout(function() {
+          playAudioGuide();
+        }, 600);
+
+        // Fallback for browsers requiring a user gesture: triggers upon first tap/click anywhere
+        const onFirstGesture = function() {
+          if (!isSpeaking && window.speechSynthesis && !window.speechSynthesis.speaking) {
+            playAudioGuide();
+          }
+          window.removeEventListener("click", onFirstGesture);
+          window.removeEventListener("touchstart", onFirstGesture);
+        };
+        window.addEventListener("click", onFirstGesture, { once: true });
+        window.addEventListener("touchstart", onFirstGesture, { once: true });
+      }
     }
 
     function openUpiApp(app) {
@@ -1001,18 +1030,8 @@
       }
     }
 
-    function toggleAudioGuide() {
+    function playAudioGuide() {
       if (!("speechSynthesis" in window)) return;
-
-      if (isSpeaking) {
-        window.speechSynthesis.cancel();
-        isSpeaking = false;
-        const t = DICT[currentLanguage] || DICT.en;
-        document.getElementById("text-audio-btn").textContent = t.audioGuide;
-        document.getElementById("audio-toggle-btn").classList.remove("playing");
-        return;
-      }
-
       window.speechSynthesis.cancel();
       const roundedAmount = Math.round(currentAmount);
       let text = "";
@@ -1053,6 +1072,18 @@
       };
 
       window.speechSynthesis.speak(utterance);
+    }
+
+    function toggleAudioGuide() {
+      if (isSpeaking) {
+        if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+        isSpeaking = false;
+        const t = DICT[currentLanguage] || DICT.en;
+        document.getElementById("text-audio-btn").textContent = t.audioGuide;
+        document.getElementById("audio-toggle-btn").classList.remove("playing");
+      } else {
+        playAudioGuide();
+      }
     }
 
     function copyUpiId() {
