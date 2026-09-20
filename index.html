@@ -28,7 +28,7 @@
 
     /* BLANK ROOT STATE (When no hash/data is provided) */
     #blank-view {
-      display: none;
+      display: block;
       width: 100%;
       max-width: 420px;
       margin: auto;
@@ -543,10 +543,13 @@
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
       </svg>
-      <span>+91 9781925023</span>
+      <span>+91 97819 25023</span>
     </a>
     <a href="https://wa.me/919781925023" target="_blank" class="blank-wa-btn">
-      <span>WhatsApp Us</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+      </svg>
+      <span>Message on WhatsApp</span>
     </a>
   </div>
 
@@ -820,7 +823,14 @@
       let parsedAmount = 0;
 
       // 1. Check Hash (#1000-Rahul_Singh or #10-Rahul)
-      const rawHash = (window.location.hash || "").replace(/^#/?/, "").trim();
+      let rawHash = (window.location.hash || "").trim();
+      if (rawHash.startsWith("#/")) {
+        rawHash = rawHash.slice(2);
+      } else if (rawHash.startsWith("#")) {
+        rawHash = rawHash.slice(1);
+      }
+      rawHash = rawHash.trim();
+
       if (rawHash) {
         const cleanHash = decodeURIComponent(rawHash).trim();
         const sepIndex = cleanHash.indexOf("-") !== -1 ? cleanHash.indexOf("-") : cleanHash.indexOf("_");
@@ -855,10 +865,14 @@
       // Format customer name
       if (rawName) {
         rawName = decodeURIComponent(rawName)
-          .replace(/[_+]/g, " ")
-          .replace(/-/g, " ")
+          .replace(/[-_+]+/g, " ")
           .trim()
-          .replace(/\b\w/g, c => c.toUpperCase());
+          .split(" ")
+          .filter(Boolean)
+          .map(function(word) {
+            return word.charAt(0).toUpperCase() + word.slice(1);
+          })
+          .join(" ");
       }
 
       if (parsedAmount > 0 && rawName) {
@@ -946,13 +960,17 @@
     function openUpiApp(app) {
       if (!currentUpiUri) return;
 
+      const upiParams = currentUpiUri.indexOf("upi://pay") === 0
+        ? currentUpiUri.substring("upi://pay".length)
+        : currentUpiUri;
+
       let targetUrl = currentUpiUri;
       if (app === "gpay") {
-        targetUrl = "gpay://upi/pay" + currentUpiUri.replace(/^upi://pay/, "");
+        targetUrl = "gpay://upi/pay" + upiParams;
       } else if (app === "phonepe") {
-        targetUrl = "phonepe://pay" + currentUpiUri.replace(/^upi://pay/, "");
+        targetUrl = "phonepe://pay" + upiParams;
       } else if (app === "paytm") {
-        targetUrl = "paytmmp://pay" + currentUpiUri.replace(/^upi://pay/, "");
+        targetUrl = "paytmmp://pay" + upiParams;
       }
 
       window.location.href = targetUrl;
@@ -1049,7 +1067,11 @@
       }, 2000);
     }
 
-    window.addEventListener("DOMContentLoaded", initPage);
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initPage);
+    } else {
+      initPage();
+    }
     window.addEventListener("hashchange", initPage);
     window.addEventListener("popstate", initPage);
   </script>
