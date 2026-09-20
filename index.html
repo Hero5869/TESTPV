@@ -986,26 +986,63 @@
       }
     }
 
+    const APP_FALLBACKS = {
+      phonepe: "https://phon.pe/0gzh6b3",
+      gpay: "https://gpay.app.goo.gl/invite-b25mc1z",
+      paytm: "https://play.google.com/store/apps/details?id=net.one97.paytm"
+    };
+
+    const APP_LAUNCH_CONFIGS = {
+      phonepe: {
+        scheme: "phonepe://",
+        intent: "intent://#Intent;package=com.phonepe.app;scheme=phonepe;S.browser_fallback_url=" + encodeURIComponent("https://phon.pe/0gzh6b3") + ";end",
+        fallback: "https://phon.pe/0gzh6b3"
+      },
+      gpay: {
+        scheme: "gpay://",
+        intent: "intent://#Intent;package=com.google.android.apps.nbu.paisa.user;scheme=gpay;S.browser_fallback_url=" + encodeURIComponent("https://gpay.app.goo.gl/invite-b25mc1z") + ";end",
+        fallback: "https://gpay.app.goo.gl/invite-b25mc1z"
+      },
+      paytm: {
+        scheme: "paytmmp://",
+        intent: "intent://#Intent;package=net.one97.paytm;scheme=paytmmp;S.browser_fallback_url=" + encodeURIComponent("https://play.google.com/store/apps/details?id=net.one97.paytm") + ";end",
+        fallback: "https://play.google.com/store/apps/details?id=net.one97.paytm"
+      }
+    };
+
     function openUpiApp(app) {
-      if (!currentUpiUri) return;
+      const cfg = APP_LAUNCH_CONFIGS[app];
+      if (!cfg) return;
 
-      const upiParams = currentUpiUri.indexOf("upi://pay") === 0
-        ? currentUpiUri.substring("upi://pay".length)
-        : currentUpiUri;
+      const isAndroid = /android/i.test(navigator.userAgent);
+      let appOpened = false;
 
-      let targetUrl = currentUpiUri;
-      if (app === "gpay") {
-        targetUrl = "gpay://upi/pay" + upiParams;
-      } else if (app === "phonepe") {
-        targetUrl = "phonepe://pay" + upiParams;
-      } else if (app === "paytm") {
-        targetUrl = "paytmmp://pay" + upiParams;
+      function onBlurOrHide() {
+        appOpened = true;
       }
 
-      window.location.href = targetUrl;
+      window.addEventListener("blur", onBlurOrHide, { once: true });
+      document.addEventListener("visibilitychange", function() {
+        if (document.hidden) {
+          appOpened = true;
+        }
+      }, { once: true });
+
+      const startTime = Date.now();
+
+      if (isAndroid) {
+        window.location.href = cfg.intent;
+      } else {
+        window.location.href = cfg.scheme;
+      }
+
       setTimeout(function() {
-        window.location.href = currentUpiUri;
-      }, 500);
+        window.removeEventListener("blur", onBlurOrHide);
+        const elapsed = Date.now() - startTime;
+        if (!appOpened && !document.hidden && elapsed < 2500) {
+          window.location.href = cfg.fallback;
+        }
+      }, 1200);
     }
 
     function saveQrToGallery() {
