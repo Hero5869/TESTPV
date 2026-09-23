@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>CSC Centre Jandwala Mira Sangla</title>
-  <meta name="description" content="Official Payment Portal & Gateway for CSC Centre Jandwala Mira Sangla" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, shrink-to-fit=no, viewport-fit=cover" />
+  <title>CSC JANDWALA MIRA SANGLA</title>
+  <meta name="description" content="Official Payment Portal & Gateway for CSC JANDWALA MIRA SANGLA" />
 
   <style>
     * {
@@ -15,15 +15,27 @@
       -webkit-tap-highlight-color: transparent;
     }
 
+    html, body {
+      width: 100%;
+      max-width: 100vw;
+      overflow-x: hidden !important;
+      touch-action: pan-y;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+      overscroll-behavior-x: none;
+      -webkit-overflow-scrolling: touch;
+    }
+
     body {
       background-color: #f8fafc;
       color: #0f172a;
       min-height: 100vh;
+      min-height: 100dvh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
-      padding: 16px 12px 32px 12px;
+      padding: 12px 10px 28px 10px;
     }
 
     /* BLANK ROOT STATE (When no hash/data is provided) */
@@ -107,6 +119,8 @@
       width: 100%;
       max-width: 760px;
       margin: 0 auto;
+      box-sizing: border-box;
+      overflow-x: hidden;
     }
 
     /* HEADER BRANDING (Exact as in reference image) */
@@ -114,32 +128,40 @@
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
-      gap: 16px;
+      gap: 12px;
       padding-bottom: 8px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
+      width: 100%;
+      box-sizing: border-box;
     }
 
     .brand-header h1 {
-      font-size: 28px;
+      font-size: clamp(18px, 5.2vw, 28px);
       font-weight: 900;
       color: #0f172a;
       letter-spacing: -0.03em;
-      line-height: 1;
+      line-height: 1.08;
+      word-break: break-word;
+      overflow-wrap: break-word;
     }
 
     .brand-header h2 {
-      font-size: 20px;
+      font-size: clamp(14px, 3.8vw, 20px);
       font-weight: 900;
       color: #0f172a;
       letter-spacing: -0.02em;
       margin-top: 2px;
+      word-break: break-word;
+      overflow-wrap: break-word;
     }
 
     .brand-header p {
-      font-size: 12px;
+      font-size: clamp(10px, 2.8vw, 12px);
       color: #64748b;
       font-weight: 500;
       margin-top: 4px;
+      word-break: break-word;
+      overflow-wrap: break-word;
     }
 
     .script-badge {
@@ -151,7 +173,7 @@
       font-family: Georgia, serif;
       font-style: italic;
       font-weight: 700;
-      font-size: 20px;
+      font-size: clamp(15px, 4vw, 20px);
       color: #1e3a8a;
       line-height: 1.15;
       position: relative;
@@ -657,16 +679,18 @@
     /* 4 App Grid */
     .app-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
       margin-bottom: 12px;
+      width: 100%;
+      box-sizing: border-box;
     }
 
     .app-box {
       background: #ffffff;
       border: 1px solid #e2e8f0;
-      border-radius: 16px;
-      padding: 10px 4px;
+      border-radius: 14px;
+      padding: 8px 2px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -675,6 +699,8 @@
       text-decoration: none;
       cursor: pointer;
       transition: all 0.15s ease;
+      min-width: 0;
+      box-sizing: border-box;
     }
 
     .app-box:hover {
@@ -684,14 +710,14 @@
     }
 
     .app-box-icon {
-      width: 38px;
-      height: 38px;
+      width: 36px;
+      height: 36px;
       border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
-      margin-bottom: 6px;
+      margin-bottom: 5px;
     }
 
     .app-box-icon img {
@@ -701,7 +727,7 @@
     }
 
     .app-box-title {
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 700;
       color: #334155;
       line-height: 1.1;
@@ -710,6 +736,7 @@
       text-overflow: ellipsis;
       width: 100%;
       padding: 0 2px;
+      box-sizing: border-box;
     }
 
     .choose-any-btn {
@@ -823,7 +850,7 @@
 
     @media (min-width: 640px) {
       .offer-grid {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
       }
     }
 
@@ -908,6 +935,14 @@
       background: #1557b0;
     }
 
+    .btn-paytm-blue {
+      background: #002970;
+    }
+
+    .btn-paytm-blue:hover {
+      background: #001e54;
+    }
+
     /* FOOTER TRUST BADGES */
     .trust-badge-grid {
       display: grid;
@@ -986,10 +1021,10 @@
   <!-- BLANK VIEW (Visited with no hash or query params) -->
   <div id="blank-view">
     <div class="blank-icon">CSC</div>
-    <div class="blank-title shop-name-disp">CSC Centre Jandwala Mira Sangla</div>
+    <div class="blank-title shop-name-disp">CSC JANDWALA MIRA SANGLA</div>
     <div class="blank-subtitle">Government & Digital Citizen Services</div>
     <p style="font-size: 13px; color: #475569; line-height: 1.6; margin-bottom: 24px; background: #f8fafc; padding: 14px; border-radius: 14px; border: 1px solid #f1f5f9;">
-      Welcome to the official payment portal of <span class="shop-name-disp">CSC Centre Jandwala Mira Sangla</span>. Please use your personal payment link or scan the counter QR code to pay.
+      Welcome to the official payment portal of <span class="shop-name-disp">CSC JANDWALA MIRA SANGLA</span>. Please use your personal payment link or scan the counter QR code to pay.
     </p>
     <a href="tel:9781925023" id="blank-tel-link" class="blank-phone-btn">
       📞 Call Us: <span class="shop-phone-disp">+91 9781925023</span>
@@ -1005,7 +1040,7 @@
       <!-- Brand Header -->
       <div class="brand-header">
         <div>
-          <h1 class="shop-name-disp" style="text-transform: uppercase;">CSC Centre Jandwala Mira Sangla</h1>
+          <h1 class="shop-name-disp" style="text-transform: uppercase;">CSC JANDWALA MIRA SANGLA</h1>
           <p>Digital Services | Documents | Insurance | Travel | More</p>
         </div>
         <div class="script-badge">
@@ -1032,7 +1067,7 @@
         <div class="summary-box">
           <div class="summary-row">
             <span class="summary-label">Merchant</span>
-            <span class="summary-val shop-name-disp">CSC Centre Jandwala Mira Sangla</span>
+            <span class="summary-val shop-name-disp">CSC JANDWALA MIRA SANGLA</span>
           </div>
           <div class="summary-row">
             <span class="summary-label">Customer</span>
@@ -1097,7 +1132,7 @@
       </div>
 
       <div class="footer-note">
-        <div class="footer-note-main">Thank you for choosing CSC Centre Jandwala Mira Sangla ❤️</div>
+        <div class="footer-note-main">Thank you for choosing CSC JANDWALA MIRA SANGLA ❤️</div>
         <div class="footer-note-sub">Seva • Sahulat • Sabke Liye</div>
       </div>
     </div>
@@ -1131,7 +1166,7 @@
       <!-- Brand Header -->
       <div class="brand-header">
         <div>
-          <h1 class="shop-name-disp" style="text-transform: uppercase;">CSC Centre Jandwala Mira Sangla</h1>
+          <h1 class="shop-name-disp" style="text-transform: uppercase;">CSC JANDWALA MIRA SANGLA</h1>
           <p>Digital Services | Documents | Insurance | Travel | More</p>
         </div>
         <div class="script-badge">
@@ -1151,7 +1186,7 @@
           <div class="pill-table">
             <div class="pill-row">
               <span class="pill-label">Merchant</span>
-              <span class="pill-val shop-name-disp">CSC Centre Jandwala Mira Sangla</span>
+              <span class="pill-val shop-name-disp">CSC JANDWALA MIRA SANGLA</span>
             </div>
             <div class="pill-row">
               <span class="pill-label">Purpose</span>
@@ -1223,7 +1258,7 @@
           <!-- 4 App Grid -->
           <div class="app-grid">
             <!-- Google Pay -->
-            <a href="gpay://" class="app-box" onclick="openUpiApp(event, 'gpay')">
+            <a id="btn-app-gpay" href="gpay://upi" class="app-box" onclick="openUpiApp(event, 'gpay')" title="Open Google Pay (gpay://upi)">
               <div class="app-box-icon">
                 <img src="https://i.postimg.cc/Y2xYqQ2N/images.png" alt="Google Pay" referrerpolicy="no-referrer" />
               </div>
@@ -1231,15 +1266,15 @@
             </a>
 
             <!-- PhonePe -->
-            <a href="phonepe://" class="app-box" onclick="openUpiApp(event, 'phonepe')">
+            <a id="btn-app-phonepe" href="phonepe://upi" class="app-box" onclick="openUpiApp(event, 'phonepe')" title="Open PhonePe (phonepe://upi)">
               <div class="app-box-icon">
                 <img src="https://i.postimg.cc/SsSQZY0m/Phone-Pe-vertical-16158be8710408f3561e1d07d01d5d89.png" alt="PhonePe" referrerpolicy="no-referrer" />
               </div>
               <div class="app-box-title">PhonePe</div>
             </a>
 
-            <!-- Paytm (Modern standard scheme and intent) -->
-            <a href="paytm://" class="app-box" onclick="openUpiApp(event, 'paytm')">
+            <!-- Paytm -->
+            <a id="btn-app-paytm" href="paytmmp://" class="app-box" onclick="openUpiApp(event, 'paytm')" title="Open Paytm (paytmmp://)">
               <div class="app-box-icon">
                 <img src="https://i.postimg.cc/HsRxpL5Y/Paytm-Logo.jpg" alt="Paytm" referrerpolicy="no-referrer" />
               </div>
@@ -1247,7 +1282,7 @@
             </a>
 
             <!-- BHIM -->
-            <a href="bhim://" class="app-box" onclick="openUpiApp(event, 'bhim')">
+            <a id="btn-app-bhim" href="bhim://" class="app-box" onclick="openUpiApp(event, 'bhim')" title="Open BHIM (bhim://)">
               <div class="app-box-icon">
                 <img src="https://i.postimg.cc/3xbgQGC8/images-(1).png" alt="BHIM" referrerpolicy="no-referrer" />
               </div>
@@ -1267,7 +1302,7 @@
           <!-- Note Callout -->
           <div class="note-callout">
             <span style="font-size: 14px;">ℹ️</span>
-            <div><strong>Note:</strong> UPI Intent will only open the selected app. You will complete the payment inside the app.</div>
+            <div><strong>Note:</strong> Tapping directly opens Google Pay, PhonePe, Paytm, or BHIM on your smartphone to complete the payment.</div>
           </div>
         </div>
       </div>
@@ -1316,6 +1351,23 @@
               <span>→</span>
             </a>
           </div>
+
+          <!-- Paytm Offer -->
+          <div class="offer-card">
+            <div class="offer-card-top">
+              <div class="offer-card-logo">
+                <img src="https://i.postimg.cc/HsRxpL5Y/Paytm-Logo.jpg" alt="Paytm" referrerpolicy="no-referrer" />
+              </div>
+              <div>
+                <div class="offer-card-title">Cashback up to ₹100</div>
+                <div class="offer-card-desc">Get up to ₹100 cashback plus ₹50 recharge voucher.</div>
+              </div>
+            </div>
+            <a href="https://p.paytm.me/xCTH/ad6lpgdg?utmt=092113" target="_blank" rel="noreferrer" class="check-offer-btn btn-paytm-blue">
+              <span>Check Offer</span>
+              <span>→</span>
+            </a>
+          </div>
         </div>
       </div>
 
@@ -1352,7 +1404,7 @@
       </div>
 
       <div class="footer-note">
-        <div class="footer-note-main">Thank you for choosing <span class="shop-name-disp">CSC Centre Jandwala Mira Sangla</span> ❤️</div>
+        <div class="footer-note-main">Thank you for choosing <span class="shop-name-disp">CSC JANDWALA MIRA SANGLA</span> ❤️</div>
         <div class="footer-note-sub">Seva • Sahulat • Sabke Liye</div>
       </div>
     </div>
@@ -1360,7 +1412,7 @@
 
   <script>
     let SHOP_CONFIG = {
-      name: "CSC Centre Jandwala Mira Sangla",
+      name: "CSC JANDWALA MIRA SANGLA",
       upiId: "paytmqr5r2q7d@ptys",
       phone: "9781925023"
     };
@@ -1594,36 +1646,65 @@
 
       // Default start on Page 1 (Checkout screen)
       showCheckoutPage();
+
+      // Set direct payment app URI schemes
+      var gpayEl = document.getElementById("btn-app-gpay");
+      if (gpayEl) gpayEl.href = UPI_APP_SCHEMES.gpay;
+      var phonepeEl = document.getElementById("btn-app-phonepe");
+      if (phonepeEl) phonepeEl.href = UPI_APP_SCHEMES.phonepe;
+      var paytmEl = document.getElementById("btn-app-paytm");
+      if (paytmEl) paytmEl.href = UPI_APP_SCHEMES.paytm;
+      var bhimEl = document.getElementById("btn-app-bhim");
+      if (bhimEl) bhimEl.href = UPI_APP_SCHEMES.bhim;
     }
 
-    // App Launchers (fixed modern Paytm launcher, no deprecated links)
-    const APP_LAUNCH_CONFIGS = {
-      phonepe: {
-        scheme: "phonepe://",
-        intent: "intent://#Intent;package=com.phonepe.app;scheme=phonepe;S.browser_fallback_url=" + encodeURIComponent("https://phon.pe/0gzh6b3") + ";end",
-        fallback: "https://phon.pe/0gzh6b3"
-      },
+    // Direct payment app URI schemes
+    const UPI_APP_SCHEMES = {
+      gpay: "gpay://upi",
+      paytm: "paytmmp://",
+      phonepe: "phonepe://upi",
+      bhim: "bhim://",
+      generic: "upi://"
+    };
+
+    // Dynamic App Store configurations (Google Play on Android, Apple App Store on iOS) for fallback
+    const APP_STORE_CONFIGS = {
       gpay: {
-        scheme: "gpay://",
-        intent: "intent://#Intent;package=com.google.android.apps.nbu.paisa.user;scheme=gpay;S.browser_fallback_url=" + encodeURIComponent("https://gpay.app.goo.gl/invite-b25mc1z") + ";end",
-        fallback: "https://gpay.app.goo.gl/invite-b25mc1z"
+        name: "Google Pay",
+        android: "https://play.google.com/store/apps/details?id=com.google.android.apps.nbu.paisa.user",
+        ios: "https://apps.apple.com/in/app/google-pay-save-pay-grow/id1193357041"
+      },
+      phonepe: {
+        name: "PhonePe",
+        android: "https://play.google.com/store/apps/details?id=com.phonepe.app",
+        ios: "https://apps.apple.com/in/app/phonepe-secure-payments/id1170055821"
       },
       paytm: {
-        scheme: "paytm://",
-        intent: "intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=net.one97.paytm;S.browser_fallback_url=" + encodeURIComponent("https://play.google.com/store/apps/details?id=net.one97.paytm") + ";end",
-        fallback: "https://play.google.com/store/apps/details?id=net.one97.paytm"
+        name: "Paytm",
+        android: "https://play.google.com/store/apps/details?id=net.one97.paytm",
+        ios: "https://apps.apple.com/in/app/paytm-payments-upi-recharge/id473941634"
       },
       bhim: {
-        scheme: "bhim://",
-        intent: "intent://#Intent;package=in.org.npci.upiapp;scheme=bhim;end",
-        fallback: "https://play.google.com/store/apps/details?id=in.org.npci.upiapp"
+        name: "BHIM",
+        android: "https://play.google.com/store/apps/details?id=in.org.npci.upiapp",
+        ios: "https://apps.apple.com/in/app/bhim-making-cashless-easier/id1200315258"
       },
       generic: {
-        scheme: "upi://",
-        intent: "upi://",
-        fallback: "upi://"
+        name: "UPI Apps",
+        android: "https://play.google.com/store/search?q=upi%20payments&c=apps",
+        ios: "https://apps.apple.com/in/search?term=upi%20payments"
       }
     };
+
+    function isIosDevice() {
+      const ua = navigator.userAgent || "";
+      return /iphone|ipad|ipod/i.test(ua) || (/macintosh/i.test(ua) && navigator.maxTouchPoints > 1);
+    }
+
+    function getStoreUrl(app) {
+      const cfg = APP_STORE_CONFIGS[app] || APP_STORE_CONFIGS.generic;
+      return isIosDevice() ? cfg.ios : cfg.android;
+    }
 
     function openUpiApp(eventOrApp, maybeApp) {
       let e = null;
@@ -1636,17 +1717,10 @@
         e.preventDefault();
       }
 
-      if (app === "generic") {
-        window.location.href = "upi://";
-        return;
-      }
+      const scheme = UPI_APP_SCHEMES[app] || "upi://";
+      const fallbackUrl = getStoreUrl(app);
 
-      const cfg = APP_LAUNCH_CONFIGS[app];
-      if (!cfg) return;
-
-      const isAndroid = /android/i.test(navigator.userAgent);
       let appOpened = false;
-
       function onBlurOrHide() {
         appOpened = true;
       }
@@ -1657,20 +1731,16 @@
       }, { once: true });
 
       const startTime = Date.now();
+      window.location.href = scheme;
 
-      if (isAndroid) {
-        window.location.href = cfg.intent;
-      } else {
-        window.location.href = cfg.scheme;
-      }
-
+      // Fallback timer: if the app is not installed, open store fallback
       setTimeout(function() {
         window.removeEventListener("blur", onBlurOrHide);
         const elapsed = Date.now() - startTime;
         if (!appOpened && !document.hidden && elapsed < 2500) {
-          window.location.href = cfg.fallback;
+          window.location.href = fallbackUrl;
         }
-      }, 1200);
+      }, 1500);
     }
 
     function saveQrToGallery() {
